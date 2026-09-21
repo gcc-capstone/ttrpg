@@ -1,6 +1,11 @@
 # Capstone Team Report
 
 # Section 1: Cover Page
+### **[Project Title]**
+
+![Project Logo]()
+
+[Add your name], JohnMichael Ross, Henry Tan
 
 ---
 
@@ -19,7 +24,11 @@
 
 ### Narrative Tone
 
-- **MVP:** Bill is in the process of setting up the weekly game session for him and his friends when he learns that Carl has had a particularly rough week with work. Typically these friends enjoy hard-fought, intense combat and making high-risk decisions, so their tone parameters usually include serious, strategic, and deadly keywords. However, Bill doesn't want this session to add to Carl's stress, so he silently edits the tone parameters of the campaign, removing the more serious keywords and replacing them with lighter, more-fun alternatives.
+- **MVP:** Bill is in the process of setting up the weekly game session for him and his friends when he learns that Carl has had a particularly rough week with work. Typically these friends enjoy hard-fought, intense combat and making high-risk decisions, so their tone parameters usually include serious, strategic, and deadly keywords. However, Bill doesn't want this session to add to Carl's stress, so he silently edits the tone parameters of the campaign, removing the more serious keywords and replacing them with lighter, more-fun alternatives, changing the tone of the AI Game Master's descriptions as well as the severity of some consequences, leading to a session enjoyed by all participants.
+
+### Storing Save Data
+
+- **MVP:** Caleb has just finished another long session of his solo campaign and wants to continue this adventure at a later point in time. He has noticed the occasional message of 'Quick Saved' pop up across his various play sessions and noted that his game picks up right where he left off when he returns. However, Caleb plans on trading in his computer due to its poor performance and inability to handle required software for work. With this, Caleb saves a file-copy of his game data to later transfer his game to his new device, load up the data and continue playing that same campaign with his favorite character. 
 
 ---
 

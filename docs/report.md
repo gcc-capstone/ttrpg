@@ -1,7 +1,7 @@
 # Capstone Team Report
 
 # Section 1: Cover Page
-### **G-MPC**
+### **The G-MPC**
 ##### **Your Eternal GM**
 
 ![Project Logo]()
@@ -14,7 +14,7 @@
 
 This product is a web-hosted AI that should serve to eliminate the necessity of the 'Game Master' (GM) role for the Table-Top Role Playing Game (TTRPG) 'Lasers and Feelings' by taking on the responsibilities of said role, thus reducing the time and stress that would be required of an individual in planning and tracking a campaign session. With this, we aim to serve a number of existing or potential players with emphasis on those who want to take a break from being the designated GM but whose players aren't willing to serve as a substitute, those who want to start a campaign but aren't confident enough in the rules or their improvisational abilities to try hosting the game, or those groups who can barely manage to schedule a session together let alone have someone plan anything substantial.
 
-
+Utilizing this system, players should be able to create and customize their own games of 'Lasers and Feelings', specifying the tone, difficulty, and general feel of the game, and being able to change it as the party needs or wants. This service aims to streamline not only the process of character creation, but the flow of the game once in-action as well, handling the ideation of consequences for actions and reducing time wasted looking up rules or stats. Players can get into the action queue, send their actions from their own device, roll for success, and watch on the main screen as the AI GM dictates the results and consequences. This AI GM is also functional in the case of long-play, capable of running a campaign for as long as the players want or until they reach a game-over.
 
 ---
 

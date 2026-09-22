@@ -1,10 +1,10 @@
 # Capstone Team Report
 
 # Section 1: Cover Page
-### **The G-MPC**
+### **The GM-PC**
 ##### **Your Eternal GM**
 
-![Project Logo]()
+![Project Logo](Logo_BlackCable.png)
 
 [Add your name], JohnMichael Ross, Henry Tan
 
@@ -19,17 +19,26 @@ Utilizing this system, players should be able to create and customize their own 
 ---
 
 # Section 3: Representative Tasks
+
+### Action Queue and Help
+
+- **MVP:** As the AI finishes with its harrowing description of the shapeshifting ooze squeezing its way through the locked door on the other side of the corridor the party realizes they've now trapped themselves in a box with the creature. Andrew realizes that as a soldier, he has a small chance to scare it off with some rounds of his laser pistol, so he hurriedly joins the action queue. To his dismay, Ian's engineer got in queue before him so he will have to wait for his turn. Andrew takes this moment to survey the situation and realizes with horror that the emergency meter has almost reached a critical point, and one more catostrophic failure could swiftly end this campaign. While this is happening, Ian is explaining to the group and typing up how he wants his engineer to tear open the nearby door panel and short-circuit the whole power relay for the spacecraft wing, thereby opening the door. Hearing this, Andrew jumps in the discussion mentioning how his soldier has unused microcharges that Ian could probably use to expedite the process and indicates on his phone that he wants to help the current action. The AI GM waits for Ian to finish his action description and Andrew to finish help explanation before deciding both actions are reasonable. The extra die Andrew provided Ian when rolling for outcome makes the critical difference and the party narrowly escapes the encounter.
+
 ### Adventure Summary
 
-- **MVP:** Jimmy and his friends have had trouble scheduling time to get together and play as a group, so it's been a week or two since the last time they played. In this time, they've forgotten a lot of what happened the last time they played, so Jimmy uses the summary feature to have the AI Game Master create a summary of what happened last time in their adventures.
+- **MVP:** Jimmy and his friends have had trouble scheduling time to get together and play as a group, so it's been a week or two since the last time they played. While they all can agree that they had defeated the space pirates at the end of the last session, they can't agree on what they had started to do next. To solve this problem, Jimmy has the AI GM create a summary of what happened last time in their adventures. The AI informs them of their exploits, ship status, items-on-hand, and individual status; in particular, the GM explains that after the space pirate attack, their ship had sustained major damage and they were on their way to the nearest port to get some repairs performed with some cash on-hand. This settles the debate and centers the group on a clear next course of action.
 
 ### Character Creation
 
-- **MVP:** After the session is started, Walter and his friends connect with their individual devices to create their characters for the campaign. Walter starts to design his character, choosing for them to be a dangerous chemist with a stat number of 2, making his character more science-oriented and coldly rational. Right as he's about to name his character, Walter's friends start laughing at him because they see on the main screen that he's accidently made his character a dangerous envoy. Walter quickly navigates back to the character's role part of the creation, changing it to chemist before going back to name his character Heisenberg and select that he is ready to play. He does not need to redo any of the other character choices again (like choosing a stat number) because the app saved what he had chosen and maintained it even after changing a previous character trait/stat.
+- **MVP:** After the session is started, Walter and his friends connect with their individual devices to create their characters for the campaign. Walter starts to design his character, choosing for them to be a dangerous scientist with a stat number of 2, making his character more science-oriented and coldly rational. Right as he's about to name his character, Walter's friends start laughing at him because they see on the main screen that he's accidently made his character a dangerous envoy. Walter quickly navigates back to the character's role part of the creation, changing it to scientist before going back to name his character and comfirm that he is ready to play.
+
+### Invalid Action
+
+- **MVP:** As the oxygen slowly drains from Isaiah's character's lungs and out into the void of space, he knows that what his next action is, it might be the last. The other players, noting the severity of the situation with this character clinging for dear-life to a stuck outer bay door, remove themselves from the action queue to allow Isaiah to take action immediately. Desperate for a quick solution, Isaiah tells the AI that he has a universal solvent on hand which would easily dissolve through the alien sludge holding the door shut and let him back into the safety of the ship. The AI ponders this for a moment, but considering Isaiah's character is an explorer and does not explicitly have this item in his inventory, it judges that he would not be able to perform this action and informs him of such. Dismayed, Isaiah is about to give up when one of the other players reminds him how this alien species is aquaphobic and thus using water might have the desired effect. Isaiah repeats his prior input but with water this time, and although he was not explicitly carrying water, the GM decides it is reasonable for an explorer to always have a portion of water or similar liquid available. The water splashes and eats away at the blockage letting Isaiah's character pry open the bay door and scramble into the hold to safety, the door slamming shut behind him.
 
 ### Narrative Tone
 
-- **MVP:** Bill is in the process of setting up the weekly game session for him and his friends when he learns that Carl has had a particularly rough week with work. Typically these friends enjoy hard-fought, intense combat and making high-risk decisions, so their tone parameters usually include serious, strategic, and deadly keywords. However, Bill doesn't want this session to add to Carl's stress, so he silently edits the tone parameters of the campaign, removing the more serious keywords and replacing them with lighter, more-fun alternatives, changing the tone of the AI Game Master's descriptions as well as the severity of some consequences, leading to a session enjoyed by all participants.
+- **MVP:** Bill is in the process of setting up the weekly game session for him and his friends when he learns that Carl has had a particularly rough week with work. Typically these friends enjoy hard-fought, intense combat and making high-risk decisions, so their tone parameters usually include serious, strategic, and deadly keywords. However, Bill doesn't want this session to add to Carl's stress, so he silently edits the tone parameters of the campaign, removing the more serious keywords and replacing them with lighter, more-fun alternatives. This changes the tone of the AI Game Master's descriptions as well as the severity of some consequences, leading to a session enjoyed by all participants, especially Carl.
 
 ### Storing Save Data
 

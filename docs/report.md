@@ -48,7 +48,7 @@ Utilizing this system, players should be able to create and customize their own 
 
 ### Mario Kart Wii
 
--Mario Kart Wii<sup>[3]</sup> is a racing game that is very different from our product. However, one of the elements that has inspired us is the end of race results/leaderboard. After completing a collection of races, the game presents the standings for the players and awards trophies based on performance. This is similar to our end of session results feature where the AI Game Master will summarize the players performances and display important events that happened. Rather than ranking players by race position like in Mario Kart, our product will give players individualized accomplishments like important decisions they made or contributions to the success of the team. This will give players a sense of accomplishment while still fitting the cooperative nature of Lasers and Feelings.
+-Mario Kart Wii<sup>[3]</sup> is a racing game that is very different from our product. However, one of the elements that has inspired us is the end of race results screen. After completing a collection of races, the game presents the final results and summarizes how the players performed. Unlike Mario Kart, our product will not rank individual players or assign points based on their performance, since Lasers & Feelings is a cooperative game. Instead, the results screen could provide a summary of the adventure, highlighting significant events, important decisions, memorable moments, and the overall outcome of the session. This would give players a way to reflect on what happened during the adventure while maintaining the cooperative nature of the game.
 
 ---
 

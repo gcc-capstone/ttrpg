@@ -6,7 +6,7 @@
 
 ![Project Logo](Logo_BlackCable.png)
 
-[Add your name], JohnMichael Ross, Henry Tan
+[Add your name], JohnMichael Ross, Henry Tan, Joshua Burick
 
 ---
 
@@ -67,6 +67,10 @@ Utilizing this system, players should be able to create and customize their own 
 
 - The Devils and the Details is one of the games featured in The Jackbox Party Pack 7<sup>[2]</sup>, having players take on the roles of various family members to work either together or individually to complete tasks and raise a collective team score above a threshold. This game shares several superficial elements with our project in that they both have a primary screen where the team status is shown and utilize individual devices on which players can perform actions. However, the actual gameplay and actions performed are radically different, with The Devils and the Details playing as a series of minigames and our project serving as means for text input and action-order resolution. One aspect of The Devils and the Details we do want to emulate however is the emergency meter; during the game, players can perform selfish actions which give a lot of individual points but lower the team score and raise the emergency rating. Upon the emergency rating reaching a critical point, the game switches to a salvage point where everyone is forced to fix a 'family emergency' such as the basement flooding. While this exact idea will not work for Lasers and Feelings as the players are entirely cooperative, having an emergency meter displayed on the main screen along with encroaching danger lights for the ship or general team status would help to add tension to a series of bad rolls, lead to team discussion and inerplay, and depending on what parameters the players create the session with, lead to a game-over given Lasers and Feelings does not specify an actual endpoint.
 
+### Mario Kart Wii
+
+-Mario Kart Wii<sup>[3]</sup> is a racing game that is very different from our product. However, one of the elements that has inspired us is the end of race results screen. After completing a collection of races, the game presents the final results and summarizes how the players performed. Unlike Mario Kart, our product will not rank individual players or assign points based on their performance, since Lasers & Feelings is a cooperative game. Instead, the results screen could provide a summary of the adventure, highlighting significant events, important decisions, memorable moments, and the overall outcome of the session. This would give players a way to reflect on what happened during the adventure while maintaining the cooperative nature of the game.
+
 ---
 
 # Section 10: Bibiliography
@@ -74,3 +78,5 @@ Utilizing this system, players should be able to create and customize their own 
 [1] Game Freak, "Pokémon FireRed," [GameBoy Advance], Tokyo, Japan: Nintendo, 2004.
 
 [2] "The Jackbox Party Pack 7," [PC], Chicago, IL, U.S.A.: Jackbox Games, 2020.
+
+[3] Nintendo, "Mario Kart Wii," [Wii], Kyoto, Japan: Nintendo, 2008.

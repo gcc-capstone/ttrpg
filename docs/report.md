@@ -42,7 +42,7 @@ Utilizing this system, players should be able to create and customize their own 
 
 ### Invalid Action
 
-- **MVP:** As the oxygen slowly drains from Isaiah's character's lungs and out into the void of space, he knows that what his next action is, it might be the last. The other players, noting the severity of the situation with this character clinging for dear-life to a jammed outer bay door, remove themselves from the action queue to allow Isaiah to take action immediately. Desperate for a quick solution, Isaiah tells the AI that he has a universal solvent on hand which would easily dissolve through the alien sludge holding the door shut and let him back into the safety of the ship. The AI ponders this for a moment, but considering Isaiah's character is an explorer and does not explicitly have this item in his inventory, it judges that he would not be able to perform this action and informs him of such. (cont.)
+- **MVP:** As the oxygen slowly drains from Isaiah's character's lungs and out into the void of space, he knows that whatever his next action is, it might be the last. The other players, noting the severity of the situation with this character clinging for dear-life to a jammed outer bay door, remove themselves from the action queue to allow Isaiah to take action immediately. Desperate for a quick solution, Isaiah tells the AI that he has a universal solvent on hand which would easily dissolve through the alien sludge holding the door shut and let him back into the safety of the ship. The AI ponders this for a moment, but considering Isaiah's character is an explorer and does not explicitly have this item in his inventory, it judges that he would not be able to perform this action and informs him of such. (cont.)
 
 ### Adventure History
 

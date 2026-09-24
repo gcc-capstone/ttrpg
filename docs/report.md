@@ -22,7 +22,7 @@ Utilizing this system, players should be able to create and customize their own 
 
 # Section 3: Representative Tasks
 
-The following items serve as a 
+The following items are the representative tasks for the GM-PC, and they serve as a descriptive benchmark to validate the successful completion of this product. Collectively, they represent every reasonable goal a typical user might have, as well as their general interactions with this product when undertaking their chosen course of action. In this case, such actions largely involve the creation of a game of 'Lasers and Feelings' and engaging with the game's world in the form of actions. Thus, the fully-realized GM-PC will have the functionality and features required as to be capable of accomodating for each of the following tasks:
 
 ### Action Queue and Emergency Meter
 

@@ -1,30 +1,56 @@
 # Capstone Team Report
 
 # Section 1: Cover Page
-### **[Project Title]**
+### **The GM-PC**
+##### **Your Eternal GM**
 
-![Project Logo]()
+![Project Logo](Logo_BlackCable.png)
 
-[Add your name], Sheldon Deal, JohnMichael Ross, Henry Tan
+Joshua Burick, Sheldon Deal, JohnMichael Ross, Henry Tan
 
 ---
 
 # Section 2: Introduction
 
+This product is a web-hosted AI that should serve to eliminate the necessity of the 'Game Master' (GM) role for the Table-Top Role Playing Game (TTRPG) 'Lasers and Feelings' by taking on the responsibilities of said role, thus reducing the time and stress that would be required of an individual in planning and tracking a campaign session. With this, we aim to serve a number of existing or potential players with emphasis on those who want to take a break from being the designated GM but whose players aren't willing to serve as a substitute, those who want to start a campaign but aren't confident enough in the rules or their improvisational abilities to try hosting the game, or those groups who can barely manage to schedule a session together let alone have someone plan anything substantial.
+
+Utilizing this system, players should be able to create and customize their own games of 'Lasers and Feelings', specifying the tone, difficulty, and general feel of the game, and being able to change it as the party needs or wants. This service aims to streamline not only the process of character creation, but the flow of the game once in-action as well, handling the ideation of consequences for actions and reducing time wasted looking up rules or stats. Players can get into the action queue, send their actions from their own device, roll for success, and watch on the main screen as the AI GM dictates the results and consequences. This AI GM is also functional in the case of long-play, capable of running a campaign for as long as the players want or until they reach a game-over.
+
 ---
 
 # Section 3: Representative Tasks
+
+### Action Queue and Emergency Meter
+
+- **MVP:** As the AI finishes with its harrowing description of the shapeshifting ooze squeezing its way through the locked door on the other side of the corridor the party realizes they've now trapped themselves in a box with the creature. Andrew realizes that as a soldier, he has a small chance to scare it off with some rounds of his laser pistol, so he hurriedly joins the action queue. To his frustration, Ian's engineer got in queue before him so he will have to wait for his turn. Andrew takes this moment to survey the situation and realizes with horror that the emergency meter has almost reached a critical point, and one more catastrophic failure could swiftly end this campaign. (cont.)
+
+### Help Action
+
+- **MVP:** (cont.) While this is happening, Ian is explaining to the group and typing up how he wants his engineer to tear open the nearby door panel and short-circuit the whole power relay for the spacecraft wing, thereby opening the door. Hearing this, Andrew jumps in the discussion mentioning how his soldier has unused microcharges that Ian could probably use to expedite the process and indicates on his phone that he wants to help the current action. The AI GM waits for Ian to finish his action description and Andrew to finish help explanation before deciding both actions are reasonable. The extra die Andrew provided Ian when rolling for outcome makes the critical difference and the party narrowly escapes the encounter.
+
 ### Adventure Summary
 
-- **MVP:** Jimmy and his friends have had trouble scheduling time to get together and play as a group, so it's been a week or two since the last time they played. In this time, they've forgotten a lot of what happened the last time they played, so Jimmy uses the summary feature to have the AI Game Master create a summary of what happened last time in their adventures.
+- **MVP:** Jimmy and his friends have had trouble scheduling time to get together and play as a group, so it's been a week or two since the last time they played. While they all can agree that they had defeated the space pirates at the end of the last session, they can't agree on what they had started to do next. To solve this problem, Jimmy has the AI GM create a summary of what happened last time in their adventures. The AI informs them of their exploits, ship status, items-on-hand, and individual status; in particular, the GM explains that after the space pirate attack, their ship had sustained major damage and they were on their way to the nearest port to get some repairs performed with some cash on-hand. This settles the debate and centers the group on a clear next course of action.
+
+### Game Creation
+
+- **MVP:** Matthew has been wanting to try out 'Lasers and Feelings', but with his prior experience solely consisting of urban-fantasy, relaxed, roleplaying games, he feels a little lost in what a sci-fi session should look like, but he does have a general idea for how he wants it to feel when playing. Matthew begins creating a new campaign, selecting the level of realism, setting the expected difficulty for combat and key actions, and listing a variety of keywords he wants the AI GM to refer to for tone such as 'relaxed', 'low-stakes' and 'adventure'. He wraps up the campaign creation by giving it a suitably fun name, 'Deep Green No. 5, and starts calling his friends to come over, whip up some characters, and test out the game system with him. (cont.)
 
 ### Character Creation
 
-- **MVP:** After the session is started, Walter and his friends connect with their individual devices to create their characters for the campaign. Walter starts to design his character, choosing for them to be a dangerous chemist with a stat number of 2, making his character more science-oriented and coldly rational. Right as he's about to name his character, Walter's friends start laughing at him because they see on the main screen that he's accidently made his character a dangerous envoy. Walter quickly navigates back to the character's role part of the creation, changing it to chemist before going back to name his character Heisenberg and select that he is ready to play. He does not need to redo any of the other character choices again (like choosing a stat number) because the app saved what he had chosen and maintained it even after changing a previous character trait/stat.
+- **MVP:** (cont.) After arriving at Matthew's place, Walter connects with his individual device to create a character for the campaign. Walter starts to design his character, choosing for them to be a dangerous scientist with a stat number of 2, making his character more science-oriented and coldly rational. Right as he's about to name his character, Matthew starts laughing at him because he spies on the main screen that Walter has accidentally made his character a charismatic envoy. Walter quickly navigates back to the character's role part of the creation, changing it to scientist before going back to name his character and confirm that he is ready to play.
+
+### Invalid Action
+
+- **MVP:** As the oxygen slowly drains from Isaiah's character's lungs and out into the void of space, he knows that what his next action is, it might be the last. The other players, noting the severity of the situation with this character clinging for dear-life to a jammed outer bay door, remove themselves from the action queue to allow Isaiah to take action immediately. Desperate for a quick solution, Isaiah tells the AI that he has a universal solvent on hand which would easily dissolve through the alien sludge holding the door shut and let him back into the safety of the ship. The AI ponders this for a moment, but considering Isaiah's character is an explorer and does not explicitly have this item in his inventory, it judges that he would not be able to perform this action and informs him of such. (cont.)
+
+### Adventure History
+
+- **MVP:** (cont.) Dismayed, Isaiah is about to give up when he decides to check the adventure history and finds that this alien species is aquaphobic, suggesting that using water might have the desired effect. Isaiah repeats his prior input but with water this time, and although he was not explicitly carrying water, the GM decides it is reasonable for an explorer to always have a portion of water or similar liquid available. The water splashes and eats away at the blockage letting Isaiah's character pry open the bay door and scramble into the hold to safety, the door slamming shut behind him.
 
 ### Narrative Tone
 
-- **MVP:** Bill is in the process of setting up the weekly game session for him and his friends when he learns that Carl has had a particularly rough week with work. Typically these friends enjoy hard-fought, intense combat and making high-risk decisions, so their tone parameters usually include serious, strategic, and deadly keywords. However, Bill doesn't want this session to add to Carl's stress, so he silently edits the tone parameters of the campaign, removing the more serious keywords and replacing them with lighter, more-fun alternatives, changing the tone of the AI Game Master's descriptions as well as the severity of some consequences, leading to a session enjoyed by all participants.
+- **MVP:** Bill is in the process of setting up the weekly game session for him and his friends when he learns that Carl has had a particularly rough week with work. Typically these friends enjoy hard-fought, intense combat and making high-risk decisions, so their tone parameters usually include serious, strategic, and deadly keywords. However, Bill doesn't want this session to add to Carl's stress, so he silently edits the tone parameters of the campaign, removing the more serious keywords and replacing them with lighter, more-fun alternatives. This changes the tone of the AI Game Master's descriptions as well as the severity of some consequences, leading to a session enjoyed by all participants, especially Carl.
 
 ### Storing Save Data
 
@@ -54,6 +80,11 @@
 ### Clash Royale
 
 - The Clash Royale<sup>[3]</sup> emote system is similar to the reaction system we plan to have in our product. Both systems allow the player to send expressive, animated reactions to during gameplay. Clash Royale has a large variety of emotes the player can display, however we do not plan to have a large selection in our implementation of the system at this point. Instead, our system will be more specific to showing if the player is for, against, or indifferent about the decisions of the other player.
+
+### Mario Kart Wii
+
+-Mario Kart Wii<sup>[3]</sup> is a racing game that is very different from our product. However, one of the elements that has inspired us is the end of race results screen. After completing a collection of races, the game presents the final results and summarizes how the players performed. Unlike Mario Kart, our product will not rank individual players or assign points based on their performance, since Lasers & Feelings is a cooperative game. Instead, the results screen could provide a summary of the adventure, highlighting significant events, important decisions, memorable moments, and the overall outcome of the session. This would give players a way to reflect on what happened during the adventure while maintaining the cooperative nature of the game.
+
 ---
 
 # Section 10: Bibiliography
@@ -63,3 +94,5 @@
 [2] "The Jackbox Party Pack 7," [PC], Chicago, IL, U.S.A.: Jackbox Games, 2020.
 
 [3] Supercell. (2016). Clash Royale (Version 4.2402.6) [Video game]. Supercell. supercell.com
+
+[4] Nintendo, "Mario Kart Wii," [Wii], Kyoto, Japan: Nintendo, 2008.

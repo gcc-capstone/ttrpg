@@ -6,7 +6,7 @@
 
 ![Project Logo](Logo_BlackCable.png)
 
-[Add your name], JohnMichael Ross, Henry Tan, Joshua Burick
+Joshua Burick, Sheldon Deal, JohnMichael Ross, Henry Tan
 
 ---
 
@@ -56,6 +56,16 @@ Utilizing this system, players should be able to create and customize their own 
 
 - **MVP:** Caleb has just finished another long session of his solo campaign and wants to continue this adventure at a later point in time. He has noticed the occasional message of 'Quick Saved' pop up across his various play sessions and noted that his game picks up right where he left off when he returns. However, Caleb plans on trading in his computer due to its poor performance and inability to handle required software for work. With this, Caleb saves a file-copy of his game data to later transfer his game to his new device, load up the data and continue playing that same campaign with his favorite character. 
 
+### Display Feedback
+
+- **MVP:** James is waiting for Sam to choose between opening the door or leaving it shut because there is a weird sound coming from the other side. Sam opens the door causing a ravid beast to enter the room. James decides to display a thumbs down because Sam made the wrong decision, causing everyone to laugh.
+
+### Rolling the Dice
+
+- **MVP:** Johnathan is about to finish his turn but decides to clean the celing fans thirty feet up in the air. Because there is a risk of him falling or damaging the fan he must roll a dice to see the result of him cleaning the fan. He rolls a five and the fan falls on the new shipment of oxygen canisters, causing their oxygen supplies to only be sufficent for another week. 
+
+### 
+
 ---
 
 # Section 4: Related Work
@@ -66,6 +76,10 @@ Utilizing this system, players should be able to create and customize their own 
 ### The Devils and the Details
 
 - The Devils and the Details is one of the games featured in The Jackbox Party Pack 7<sup>[2]</sup>, having players take on the roles of various family members to work either together or individually to complete tasks and raise a collective team score above a threshold. This game shares several superficial elements with our project in that they both have a primary screen where the team status is shown and utilize individual devices on which players can perform actions. However, the actual gameplay and actions performed are radically different, with The Devils and the Details playing as a series of minigames and our project serving as means for text input and action-order resolution. One aspect of The Devils and the Details we do want to emulate however is the emergency meter; during the game, players can perform selfish actions which give a lot of individual points but lower the team score and raise the emergency rating. Upon the emergency rating reaching a critical point, the game switches to a salvage point where everyone is forced to fix a 'family emergency' such as the basement flooding. While this exact idea will not work for Lasers and Feelings as the players are entirely cooperative, having an emergency meter displayed on the main screen along with encroaching danger lights for the ship or general team status would help to add tension to a series of bad rolls, lead to team discussion and inerplay, and depending on what parameters the players create the session with, lead to a game-over given Lasers and Feelings does not specify an actual endpoint.
+
+### Clash Royale
+
+- The Clash Royale<sup>[3]</sup> emote system is similar to the reaction system we plan to have in our product. Both systems allow the player to send expressive, animated reactions to during gameplay. Clash Royale has a large variety of emotes the player can display, however we do not plan to have a large selection in our implementation of the system at this point. Instead, our system will be more specific to showing if the player is for, against, or indifferent about the decisions of the other player.
 
 ### Mario Kart Wii
 
@@ -79,4 +93,6 @@ Utilizing this system, players should be able to create and customize their own 
 
 [2] "The Jackbox Party Pack 7," [PC], Chicago, IL, U.S.A.: Jackbox Games, 2020.
 
-[3] Nintendo, "Mario Kart Wii," [Wii], Kyoto, Japan: Nintendo, 2008.
+[3] Supercell. (2016). Clash Royale (Version 4.2402.6) [Video game]. Supercell. supercell.com
+
+[4] Nintendo, "Mario Kart Wii," [Wii], Kyoto, Japan: Nintendo, 2008.

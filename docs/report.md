@@ -62,11 +62,11 @@ The following items are the representative tasks for the GM-PC, and they serve a
 
 ### Display Feedback
 
-- **MVP:** James is waiting for Sam to choose between opening the door or leaving it shut because there is a weird sound coming from the other side. Sam opens the door causing a ravid beast to enter the room. James decides to display a thumbs down because Sam made the wrong decision, causing everyone to laugh.
+- **MVP:** James is waiting for Sam to choose between opening the door or leaving it shut because there is a weird sound coming from the other side. Sam decides to use an action to open the door, causing a rabid beast to enter the room. James decides to display a thumbs down because Sam made the wrong decision, causing everyone to laugh.
 
 ### Rolling the Dice
 
-- **MVP:** Johnathan is about to finish his turn but decides to clean the celing fans thirty feet up in the air. Because there is a risk of him falling or damaging the fan he must roll a dice to see the result of him cleaning the fan. He rolls a five and the fan falls on the new shipment of oxygen canisters, causing their oxygen supplies to only be sufficent for another week. 
+- **MVP:** Johnathan is about to finish his turn but decides to clean the ceiling fans thirty feet up in the air. Because there is a risk of him falling or damaging the fan in the process, he must roll a dice to see what the result is. He rolls two failures, causing the fan to fall on the new shipment of oxygen canisters, meaning that their oxygen supplies will only last for one week. 
 
 ### 
 
@@ -86,7 +86,7 @@ Recognizing this product is not created in isolation, there are several other pr
 
 ### Clash Royale
 
-- The Clash Royale<sup>[3]</sup> emote system is similar to the reaction system we plan to have in our product. Both systems allow the player to send expressive, animated reactions to during gameplay. Clash Royale has a large variety of emotes the player can display, however we do not plan to have a large selection in our implementation of the system at this point. Instead, our system will be more specific to showing if the player is for, against, or indifferent about the decisions of the other player.
+- The 'Clash Royale/<sup>[3]</sup> emote system is similar to the reaction system we plan to have in our product. Both systems allow the player to send expressive, animated reactions during gameplay. 'Clash Royale' has a large variety of emotes the player can display; however, we do not plan to have a large selection in our implementation of the system at this point. Instead, our system will be more specific to showing if the player is for, against, or indifferent about the decisions of the other player.
 
 ### Mario Kart Wii
 
@@ -96,10 +96,10 @@ Recognizing this product is not created in isolation, there are several other pr
 
 # Section 10: Bibiliography
 
-[1] Game Freak, "Pokémon FireRed," [GameBoy Advance], Tokyo, Japan: Nintendo, 2004.
+[1] Game Freak, *Pokémon FireRed*. Tokyo, Japan: Nintendo, 2004. [GameBoy Advance].
 
-[2] "The Jackbox Party Pack 7," [PC], Chicago, IL, U.S.A.: Jackbox Games, 2020.
+[2] Jackbox Games, *The Jackbox Party Pack 7*. Chicago, IL, U.S.A.: Jackbox Games, 2020. [PC].
 
-[3] Supercell. (2016). Clash Royale (Version 4.2402.6) [Video game]. Supercell. supercell.com
+[3] Supercell, *Clash Royale*, ver. 4.2402.6. Helsinki, Finland: Supercell, 2016. [Mobile].
 
-[4] Nintendo, "Mario Kart Wii," [Wii], Kyoto, Japan: Nintendo, 2008.
+[4] Nintendo, *Mario Kart Wii*. Kyoto, Japan: Nintendo, 2008. [Wii].

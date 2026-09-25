@@ -74,7 +74,7 @@ The following items are the representative tasks for the GM-PC, and they serve a
 
 # Section 4: Related Work
 
-Recognizing this product is not created in isolation to other
+Recognizing this product is not created in isolation, there are several other products and services which are either director competitors within the field of artificial TTRPG GMs or serve as inspiration with regard to specific components or mechanics. Highlighting and analyzing such products allows for good faith emulation as well as clarity in where this product may differentiate itself and develop its own identity. Below is a curated selection of works for the purpose of analyzing, comparing, and contrasting:
 
 ### Pokémon FireRed
 

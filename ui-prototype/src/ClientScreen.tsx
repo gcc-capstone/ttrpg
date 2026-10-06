@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useGlobalStore } from "./GlobalStore";
 
-export default function ClientScreen() {
+export default function ClientScreen({ clientId }: { clientId?: number }) {
   const { addCharacter, addMessage } = useGlobalStore();
 
   const [mode, setMode] = useState<"create" | "preview" | "chat">("create");
@@ -41,7 +41,7 @@ export default function ClientScreen() {
   };
 
   const finalizeCharacter = () => {
-    addCharacter(character);
+    addCharacter({ ...character, clientId });
 
     addMessage({ from: "gm", text: `Welcome, ${character.name}. Your journey begins now.` });
     addMessage({ from: "gm", text: `You are a ${character.style} ${character.class} with a number of ${character.number}.` });
@@ -53,17 +53,18 @@ export default function ClientScreen() {
   const sendMessage = () => {
     if (!text.trim()) return;
 
-    addMessage({ from: "client", text });
+    addMessage({ from: `client${clientId ?? ""}`, text });
     addMessage({ from: "gm", text: "The scene shifts as your action influences the unfolding narrative." });
 
     setText("");
   };
 
   const sendAction = (action: string) => {
-    addMessage({ from: "client", text: `Action: ${action}` });
+    addMessage({ from: `client${clientId ?? ""}`, text: `Action: ${action}` });
     addMessage({ from: "gm", text: "Your action ripples through the scene." });
   };
 
+  // CREATE SCREEN
   if (mode === "create") {
     return (
       <div style={styles.createPage}>
@@ -166,6 +167,7 @@ export default function ClientScreen() {
     );
   }
 
+  // PREVIEW SCREEN
   if (mode === "preview") {
     return (
       <div style={styles.previewPage}>
@@ -190,6 +192,7 @@ export default function ClientScreen() {
     );
   }
 
+  // CHAT SCREEN
   return (
     <div style={styles.page}>
       <div style={styles.topBar}>
@@ -197,9 +200,7 @@ export default function ClientScreen() {
         <div style={styles.topIcon} onClick={() => setShowStats(!showStats)}>≡</div>
       </div>
 
-      <div style={styles.historyBox}>
-        {/* HostScreen will display messages */}
-      </div>
+      <div style={styles.historyBox}></div>
 
       <div style={styles.actionRow}>
         <button style={styles.actionButton} onClick={() => sendAction("Attack")}>Attack</button>
@@ -224,21 +225,20 @@ export default function ClientScreen() {
       <div style={styles.keyboardArea}>Keyboard</div>
 
       {showStats && (
-  <div style={styles.statsPanel}>
-    <h2 style={styles.statsHeader}>Character Stats</h2>
+        <div style={styles.statsPanel}>
+          <h2 style={styles.statsHeader}>Character Stats</h2>
 
-    <div style={styles.statsRow}><strong>Name:</strong> {character.name}</div>
-    <div style={styles.statsRow}><strong>Style:</strong> {character.style}</div>
-    <div style={styles.statsRow}><strong>Role:</strong> {character.class}</div>
-    <div style={styles.statsRow}><strong>Number:</strong> {character.number}</div>
-    <div style={styles.statsRow}><strong>Background:</strong> {character.background || "None"}</div>
+          <div style={styles.statsRow}><strong>Name:</strong> {character.name}</div>
+          <div style={styles.statsRow}><strong>Style:</strong> {character.style}</div>
+          <div style={styles.statsRow}><strong>Role:</strong> {character.class}</div>
+          <div style={styles.statsRow}><strong>Number:</strong> {character.number}</div>
+          <div style={styles.statsRow}><strong>Background:</strong> {character.background || "None"}</div>
 
-    <button style={styles.closeStatsButton} onClick={() => setShowStats(false)}>
-      Close
-    </button>
-  </div>
-)}
-
+          <button style={styles.closeStatsButton} onClick={() => setShowStats(false)}>
+            Close
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -441,39 +441,38 @@ const styles = {
     justifyContent: "center",
   },
   statsPanel: {
-  position: "absolute",
-  top: 0,
-  right: 0,
-  width: "300px",
-  height: "100vh",
-  backgroundColor: "#111",
-  color: "#FFF",
-  borderLeft: "3px solid #4CC9A3",
-  padding: "20px",
-  zIndex: 999,
-  display: "flex",
-  flexDirection: "column",
-},
-
-statsHeader: {
-  fontSize: "24px",
-  marginBottom: "20px",
-  color: "#4CC9A3",
-  fontWeight: 700,
-},
-
-statsRow: {
-  fontSize: "16px",
-  marginBottom: "12px",
-},
-
-closeStatsButton: {
-  marginTop: "auto",
-  backgroundColor: "#4CC9A3",
-  color: "#000",
-  padding: "10px 16px",
-  borderRadius: "6px",
-  border: "none",
-  cursor: "pointer",
-},
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: "300px",
+    height: "100vh",
+    backgroundColor: "#111",
+    color: "#FFF",
+    borderLeft: "3px solid #4CC9A3",
+    padding: "20px",
+    zIndex: 999,
+    display: "flex",
+    flexDirection: "column",
+  },
+  statsHeader: {
+    fontSize: "24px",
+    marginBottom: "20px",
+    color: "#4CC9A3",
+    fontWeight: 700,
+  },
+  statsRow: {
+    fontSize: "16px",
+    marginBottom: "12px",
+  },
+  closeStatsButton: {
+    marginTop: "auto",
+    backgroundColor: "#4CC9A3",
+    color: "#000",
+    padding: "10px 16px",
+    borderRadius: "6px",
+    border: "none",
+    cursor: "pointer",
+  },
 };
+
+

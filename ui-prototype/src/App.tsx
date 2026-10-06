@@ -5,6 +5,8 @@ import { GlobalStoreProvider } from "./GlobalStore";
 import StyleGuide from "./StyleGuide";
 import HostScreen from "./HostScreen";
 import ClientScreen from "./ClientScreen";
+import SessionLobby from "./SessionLobby";
+import RequireLobby from "./RequireLobby";
 
 export default function App() {
   return (
@@ -15,18 +17,57 @@ export default function App() {
             <div style={styles.navLogo}>AI GM Prototype</div>
 
             <nav style={styles.navLinks}>
+              <Link to="/lobby" style={styles.navButton}>Lobby</Link>
               <Link to="/style" style={styles.navButton}>Style Guide</Link>
-              <Link to="/host" style={styles.navButton}>Host</Link>
-              <Link to="/client" style={styles.navButton}>Client</Link>
             </nav>
           </header>
 
           <div style={styles.content}>
             <Routes>
-              <Route path="/" element={<StyleGuide />} />
+              {/* LOBBY */}
+              <Route path="/" element={<SessionLobby />} />
+              <Route path="/lobby" element={<SessionLobby />} />
+
+              {/* HOST (protected) */}
+              <Route
+                path="/host"
+                element={
+                  <RequireLobby>
+                    <HostScreen />
+                  </RequireLobby>
+                }
+              />
+
+              {/* CLIENTS (protected) */}
+              <Route
+                path="/client1"
+                element={
+                  <RequireLobby>
+                    <ClientScreen clientId={1} />
+                  </RequireLobby>
+                }
+              />
+
+              <Route
+                path="/client2"
+                element={
+                  <RequireLobby>
+                    <ClientScreen clientId={2} />
+                  </RequireLobby>
+                }
+              />
+
+              <Route
+                path="/client"
+                element={
+                  <RequireLobby>
+                    <ClientScreen />
+                  </RequireLobby>
+                }
+              />
+
+              {/* STYLE GUIDE */}
               <Route path="/style" element={<StyleGuide />} />
-              <Route path="/host" element={<HostScreen />} />
-              <Route path="/client" element={<ClientScreen />} />
             </Routes>
           </div>
         </div>
@@ -38,31 +79,34 @@ export default function App() {
 const styles = {
   page: {
     fontFamily: "Arial, sans-serif",
-    backgroundColor: "#F7F5F0",
+    backgroundColor: "transparent",
     minHeight: "100vh",
-    padding: "16px",
+    padding: "0",
+    margin: "0",
   },
   nav: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#2F4F3A",
+    backgroundColor: "transparent",
     color: "#FFFFFF",
     padding: "10px 16px",
-    borderRadius: "8px",
-    marginBottom: "16px",
+    borderRadius: "0",
+    marginBottom: "0",
   },
   navLogo: {
     fontSize: "18px",
     fontWeight: 700,
+    color: "#4CC9A3",
   },
   navLinks: {
     display: "flex",
     gap: "8px",
   },
   navButton: {
-    backgroundColor: "#B4473A",
-    color: "#FFFFFF",
+    backgroundColor: "transparent",
+    color: "#4CC9A3",
+    border: "2px solid #4CC9A3",
     borderRadius: "6px",
     padding: "6px 10px",
     textDecoration: "none",
@@ -70,6 +114,6 @@ const styles = {
     fontWeight: 600,
   },
   content: {
-    marginTop: "8px",
+    marginTop: "0",
   },
 };

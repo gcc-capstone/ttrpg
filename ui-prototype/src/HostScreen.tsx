@@ -2,7 +2,22 @@ import React from "react";
 import { useGlobalStore } from "./GlobalStore";
 
 export default function HostScreen() {
-  const { characters, messages } = useGlobalStore();
+  const {
+    characters,
+    messages,
+    createHost,
+    selectedHost,
+    hosts
+  } = useGlobalStore();
+
+  // Register this host session only once
+  React.useEffect(() => {
+    // If this host already exists, do nothing
+    if (selectedHost) return;
+
+    // Create a new host session
+    createHost("Host");
+  }, []);
 
   return (
     <div style={styles.page}>
@@ -49,7 +64,7 @@ export default function HostScreen() {
 
             {messages.map((m, i) => (
               <div key={i} style={styles.chatLine}>
-                <strong>{m.from === "client" ? "Player" : "GM"}:</strong>{" "}
+                <strong>{m.from.includes("client") ? m.from : "GM"}:</strong>{" "}
                 {m.text}
               </div>
             ))}
@@ -93,12 +108,11 @@ const styles: Record<string, React.CSSProperties> = {
     gridTemplateColumns: "1fr 2fr 1fr",
     gridTemplateRows: "auto 80px",
     height: "100vh",
-    backgroundColor: "#000000", // full black background
+    backgroundColor: "#000000",
     fontFamily: "Arial, sans-serif",
-    color: "#E0E0E0", // light grey text
+    color: "#E0E0E0",
   },
 
-  /* LEFT COLUMN */
   leftColumn: {
     display: "flex",
     flexDirection: "column",
@@ -106,7 +120,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "20px",
   },
   portraitCard: {
-    backgroundColor: "#1A1A1A", // dark grey card
+    backgroundColor: "#1A1A1A",
     color: "#FFFFFF",
     height: "130px",
     borderRadius: "12px",
@@ -116,11 +130,10 @@ const styles: Record<string, React.CSSProperties> = {
     transform: "skew(-10deg)",
     fontSize: "20px",
     fontWeight: 700,
-    border: "3px solid #4CC9A3", // neon blue outline
-    boxShadow: "0 0 12px rgba(76, 201, 255, 0.4)", // glowing blue
+    border: "3px solid #4CC9A3",
+    boxShadow: "0 0 12px rgba(76, 201, 255, 0.4)",
   },
 
-  /* CENTER COLUMN */
   centerColumn: {
     display: "flex",
     flexDirection: "column",
@@ -128,10 +141,10 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "20px",
   },
   centerBox: {
-    backgroundColor: "#1A1A1A", // dark grey card
+    backgroundColor: "#1A1A1A",
     borderRadius: "12px",
     padding: "20px",
-    border: "3px solid #4CC9A3", // neon blue outline
+    border: "3px solid #4CC9A3",
     boxShadow: "0 0 12px rgba(76, 201, 255, 0.4)",
     height: "100%",
   },
@@ -139,7 +152,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "24px",
     fontWeight: 700,
     marginBottom: "10px",
-    color: "#4CC9A3", // neon blue text
+    color: "#4CC9A3",
   },
   centerText: {
     fontSize: "16px",
@@ -150,7 +163,7 @@ const styles: Record<string, React.CSSProperties> = {
   chatLog: {
     maxHeight: "200px",
     overflowY: "auto",
-    backgroundColor: "#0F0F0F", // darker grey
+    backgroundColor: "#0F0F0F",
     padding: "10px",
     borderRadius: "8px",
     border: "2px solid #4CC9A3",
@@ -165,7 +178,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#777",
   },
 
-  /* RIGHT COLUMN */
   rightColumn: {
     display: "flex",
     flexDirection: "column",
@@ -189,7 +201,7 @@ const styles: Record<string, React.CSSProperties> = {
   statusPortrait: {
     width: "60px",
     height: "60px",
-    backgroundColor: "#4CC9A3", // neon blue
+    backgroundColor: "#4CC9A3",
     borderRadius: "8px",
     display: "flex",
     alignItems: "center",
@@ -213,7 +225,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#CCCCCC",
   },
 
-  /* PALETTE */
   paletteRow: {
     gridColumn: "1 / span 3",
     display: "flex",

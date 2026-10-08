@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useGlobalStore } from "./GlobalStore";
 
 export default function ClientScreen({ clientId }: { clientId?: number }) {
-  const { addCharacter, addMessage } = useGlobalStore();
+  const { addCharacter, addMessage, updateHullIntegrity } = useGlobalStore();
 
   const [mode, setMode] = useState<"create" | "preview" | "chat">("create");
 
@@ -61,6 +61,14 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
 
   const sendAction = (action: string) => {
     addMessage({ from: `client${clientId ?? ""}`, text: `Action: ${action}` });
+
+    // Only Attack and Defend affect the ship's hull integrity.
+    if (action === "Attack") {
+      updateHullIntegrity(-1);
+    } else if (action === "Defend") {
+      updateHullIntegrity(1);
+    }
+
     addMessage({ from: "gm", text: "Your action ripples through the scene." });
   };
 

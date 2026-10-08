@@ -34,6 +34,8 @@ type Store = {
 
   addCharacter: (c: Character) => void;
   addMessage: (m: Message) => void;
+  hullIntegrity: number;
+  updateHullIntegrity: (delta: number) => void;
 };
 
 const GlobalContext = createContext<Store | null>(null);
@@ -51,6 +53,13 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
 
   const [characters, setCharacters] = useState<Character[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+
+  // Temporary prototype hull state. The six visible segments are the
+  // starting hit points, but the actual value is allowed to exceed six.
+  const [hullIntegrity, setHullIntegrity] = useState<number>(() => {
+    const saved = localStorage.getItem("hullIntegrity");
+    return saved ? Number(saved) : 6;
+  });
 
   // Track which clients have joined each host
   const [hostClients, setHostClients] = useState<
@@ -94,6 +103,10 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
 
       if (data.type === "addMessage") {
         setMessages((prev) => [...prev, data.payload]);
+      }
+
+      if (data.type === "hull-integrity") {
+        setHullIntegrity((prev) => Math.max(0, prev + data.delta));
       }
     };
   }, []);
@@ -146,6 +159,17 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
     channel.postMessage({ type: "addMessage", payload: m });
   };
 
+  // Change hull integrity from client actions.
+  // A delta is broadcast so multiple tabs can contribute changes.
+  const updateHullIntegrity = (delta: number) => {
+    setHullIntegrity((prev) => Math.max(0, prev + delta));
+    channel.postMessage({ type: "hull-integrity", delta });
+  };
+
+  useEffect(() => {
+    localStorage.setItem("hullIntegrity", String(hullIntegrity));
+  }, [hullIntegrity]);
+
   return (
     <GlobalContext.Provider
       value={{
@@ -159,6 +183,8 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
         markClientJoined,
         addCharacter,
         addMessage,
+        hullIntegrity,
+        updateHullIntegrity,
       }}
     >
       {children}

@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
 
 export default function HostScreen() {
+  const navigate = useNavigate();
   const {
     characters,
     messages,
@@ -11,6 +13,9 @@ export default function HostScreen() {
     hullIntegrity,
   } = useGlobalStore();
 
+  const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
+  const won = hullIntegrity >= 12;
+
   // Register this host session only once
   React.useEffect(() => {
     // If this host already exists, do nothing
@@ -19,6 +24,16 @@ export default function HostScreen() {
     // Create a new host session
     createHost("Host");
   }, []);
+
+  if (gameOver) {
+    return <div style={{minHeight:"100vh",background:"#000",color:"#fff",display:"grid",placeItems:"center",fontFamily:"Arial"}}>
+      <div style={{background:"#111",border:`2px solid ${won ? "#4CC9A3" : "#B4473A"}`,borderRadius:12,padding:40,textAlign:"center"}}>
+        <h1 style={{color:won ? "#4CC9A3" : "#B4473A"}}>{won ? "VICTORY" : "DEFEAT"}</h1>
+        <h2 style={{color:"#fff"}}>{won ? "The Crew Wins!" : "The Ship Was Destroyed"}</h2>
+        <button onClick={() => navigate("/lobby")} style={{marginTop:18,padding:"12px 22px",background:"#4CC9A3",color:"#000",border:0,borderRadius:8,fontWeight:700,cursor:"pointer"}}>Back to Lobby</button>
+      </div>
+    </div>;
+  }
 
   return (
     <div style={styles.page}>

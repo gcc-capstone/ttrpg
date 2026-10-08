@@ -54,12 +54,12 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
   const [characters, setCharacters] = useState<Character[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
 
-  // Temporary prototype hull state. The six visible segments are the
-  // starting hit points, but the actual value is allowed to exceed six.
-  const [hullIntegrity, setHullIntegrity] = useState<number>(() => {
-    const saved = localStorage.getItem("hullIntegrity");
-    return saved ? Number(saved) : 6;
+  // Hull integrity belongs to each session, not to the whole application.
+  const [hullByHost, setHullByHost] = useState<Record<string, number>>(() => {
+    try { return JSON.parse(localStorage.getItem("hullByHost") || "{}"); }
+    catch { return {}; }
   });
+  const hullIntegrity = selectedHost ? (hullByHost[selectedHost] ?? 6) : 6;
 
   // Track which clients have joined each host
   const [hostClients, setHostClients] = useState<
@@ -105,8 +105,11 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
         setMessages((prev) => [...prev, data.payload]);
       }
 
-      if (data.type === "hull-integrity") {
-        setHullIntegrity((prev) => Math.max(0, prev + data.delta));
+      if (data.type === "hull-integrity" && data.hostId) {
+        setHullByHost((prev) => ({
+          ...prev,
+          [data.hostId]: Math.max(0, (prev[data.hostId] ?? 6) + data.delta),
+        }));
       }
     };
   }, []);
@@ -120,6 +123,7 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
     };
 
     setHosts((prev) => [...prev, newHost]);
+    setHullByHost((prev) => ({ ...prev, [newHost.id]: 6 }));
     channel.postMessage({ type: "host-created", host: newHost });
 
     return newHost; // critical for navigation
@@ -162,13 +166,17 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
   // Change hull integrity from client actions.
   // A delta is broadcast so multiple tabs can contribute changes.
   const updateHullIntegrity = (delta: number) => {
-    setHullIntegrity((prev) => Math.max(0, prev + delta));
-    channel.postMessage({ type: "hull-integrity", delta });
+    if (!selectedHost) return;
+    setHullByHost((prev) => ({
+      ...prev,
+      [selectedHost]: Math.max(0, (prev[selectedHost] ?? 6) + delta),
+    }));
+    channel.postMessage({ type: "hull-integrity", hostId: selectedHost, delta });
   };
 
   useEffect(() => {
-    localStorage.setItem("hullIntegrity", String(hullIntegrity));
-  }, [hullIntegrity]);
+    localStorage.setItem("hullByHost", JSON.stringify(hullByHost));
+  }, [hullByHost]);
 
   return (
     <GlobalContext.Provider

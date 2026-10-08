@@ -12,6 +12,7 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
   enterQueue,
   endTurn,
   helpUser,
+  undoHelp,
   leaveQueue,
   updateHullIntegrity,
   hullIntegrity,
@@ -70,6 +71,10 @@ const canHelpUser =
   !isMyTurn &&
   helpTargets.length > 0;
 
+const isHelpingSomeone =
+  clientId !== undefined &&
+  queue.some((member) => member.helperClientId === clientId);
+
 const handleEnterQueue = () => {
   if (clientId === undefined || isInQueue) return;
 
@@ -112,6 +117,23 @@ const handleHelpUser = (targetClientId: number) => {
   });
 
   setShowHelpOptions(false);
+};
+
+const handleUndoHelp = () => {
+  if (clientId === undefined || !isHelpingSomeone) return;
+
+  const target = queue.find(
+    (member) => member.helperClientId === clientId
+  );
+
+  undoHelp(clientId);
+
+  if (target) {
+    addMessage({
+      from: `client${clientId}`,
+      text: `${character.name} is no longer helping ${target.characterName}.`,
+    });
+  }
 };
 
 const handleAction = (action: string) => {
@@ -372,17 +394,28 @@ const handleRoll = () => {
   )}
 
   {!isMyTurn && (
-    <button
-      style={{
-        ...styles.helpButton,
-        ...(!canHelpUser ? styles.disabledHelpButton : {}),
-      }}
-      disabled={!canHelpUser}
-      onClick={() => setShowHelpOptions(!showHelpOptions)}
-    >
-      Help
-    </button>
-  )}
+  <>
+    {isHelpingSomeone ? (
+      <button
+        style={styles.undoHelpButton}
+        onClick={handleUndoHelp}
+      >
+        Undo Help
+      </button>
+    ) : (
+      <button
+        style={{
+          ...styles.helpButton,
+          ...(!canHelpUser ? styles.disabledHelpButton : {}),
+        }}
+        disabled={!canHelpUser}
+        onClick={() => setShowHelpOptions(!showHelpOptions)}
+      >
+        Help
+      </button>
+    )}
+  </>
+)}
 
   {isInQueue && !isMyTurn && (
     <div style={styles.waitingText}>
@@ -875,6 +908,17 @@ helpButton: {
   fontSize: "16px",
   fontWeight: 600,
   marginRight: "12px",
+},
+undoHelpButton: {
+  backgroundColor: "#B4473A",
+  color: "#FFFFFF",
+  padding: "12px 24px",
+  borderRadius: "6px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "16px",
+  fontWeight: 600,
+  marginLeft: "12px",
 },
 };
 

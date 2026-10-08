@@ -36,7 +36,8 @@ type Store = {
   hostClients: Record<string, { client1: boolean; client2: boolean }>;
   queue: QueueMember[];
 
-  helpUser: (helperClientId: number, targetClientId: number) => void;  
+  helpUser: (helperClientId: number, targetClientId: number) => void; 
+  undoHelp: (helperClientId: number) => void; 
   createHost: (name: string) => HostSession;
   joinHost: (hostId: string) => void;
   markClientJoined: (hostId: string, clientId: number) => void;
@@ -44,6 +45,7 @@ type Store = {
   enterQueue: (member: QueueMember) => void;
   leaveQueue: (clientId: number) => void;
   endTurn: (clientId: number) => void;
+  
 
   addCharacter: (c: Character) => void;
   addMessage: (m: Message) => void;
@@ -171,6 +173,22 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
 
         return member;
       })
+  );
+}
+
+if (data.type === "queue-undo-help") {
+  setQueue((prev) =>
+    prev.map((member) => {
+      if (member.helperClientId === data.helperClientId) {
+        return {
+          ...member,
+          helperClientId: undefined,
+          helperCharacterName: undefined,
+        };
+      }
+
+      return member;
+    })
   );
 }
 
@@ -311,6 +329,27 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
   });
 };
 
+const undoHelp = (helperClientId: number) => {
+  setQueue((prev) =>
+    prev.map((member) => {
+      if (member.helperClientId === helperClientId) {
+        return {
+          ...member,
+          helperClientId: undefined,
+          helperCharacterName: undefined,
+        };
+      }
+
+      return member;
+    })
+  );
+
+  channel.postMessage({
+    type: "queue-undo-help",
+    helperClientId,
+  });
+};
+
   const endTurn = (clientId: number) => {
     setQueue((prev) => {
       // Only the player whose turn it currently is can end the turn.
@@ -373,6 +412,7 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
         hullIntegrity,
         updateHullIntegrity,
         helpUser,
+        undoHelp,
         leaveQueue,
       }}
     >

@@ -64,13 +64,11 @@ export default function HostScreen() {
                 {index + 1}. {member.characterName}
               </div>
 
-              <div style={styles.queuePlayer}>
-                Player {member.clientId}
-              </div>
+          
 
               {member.helperCharacterName && (
                 <div style={styles.helperName}>
-                  Helping: {member.helperCharacterName}
+                  {member.helperCharacterName} wants to help!
                 </div>
               )}
             </div>
@@ -297,8 +295,8 @@ const styles: Record<string, React.CSSProperties> = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  backgroundColor: "#FFFFFF",
-  color: "#2B2B2B",
+  backgroundColor: "#1A1A1A",
+  color: "#FFFFFF",
   padding: "12px 16px",
   borderRadius: "6px",
   border: "1px solid #DDD",
@@ -318,6 +316,7 @@ queuePlayer: {
   fontSize: "13px",
   color: "#555555",
   marginTop: "4px",
+  
 },
 
 nextLabel: {

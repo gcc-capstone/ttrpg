@@ -8,6 +8,7 @@ export default function HostScreen() {
     characters,
     messages,
     createHost,
+    queue,
     selectedHost,
     hosts,
     hullIntegrity,
@@ -54,39 +55,86 @@ export default function HostScreen() {
         ))}
       </div>
 
-      {/* CENTER — AI Response + Player Action + Chat Log */}
-      <div style={styles.centerColumn}>
-        <div style={styles.centerBox}>
-          <h2 style={styles.centerHeading}>AI Response</h2>
-          <p style={styles.centerText}>
-            The AI GM describes the next scene or reacts to player actions.
-          </p>
-        </div>
+      {/* CENTER — Queue + AI Response + Player Action + Chat Log */}
+<div style={styles.centerColumn}>
 
-        <div style={styles.centerBox}>
-          <h2 style={styles.centerHeading}>Player Action</h2>
-          <p style={styles.centerText}>
-            Player actions appear here as they are submitted.
-          </p>
-        </div>
+  <div style={styles.centerBox}>
+    <h2 style={styles.centerHeading}>Player Queue</h2>
 
-        <div style={styles.centerBox}>
-          <h2 style={styles.centerHeading}>Live Chat Log</h2>
-
-          <div style={styles.chatLog}>
-            {messages.length === 0 && (
-              <div style={styles.chatEmpty}>No messages yet.</div>
-            )}
-
-            {messages.map((m, i) => (
-              <div key={i} style={styles.chatLine}>
-                <strong>{m.from.includes("client") ? m.from : "GM"}:</strong>{" "}
-                {m.text}
+    {queue.length === 0 ? (
+      <p style={styles.centerText}>
+        No players are currently waiting.
+      </p>
+    ) : (
+      <div>
+        {queue.map((member, index) => (
+          <div
+            key={member.clientId}
+            style={{
+              ...styles.queueRow,
+              ...(index === 0 ? styles.activeQueueRow : {}),
+            }}
+          >
+            <div>
+              <div style={styles.queueName}>
+                {index + 1}. {member.characterName}
               </div>
-            ))}
+
+              <div style={styles.queuePlayer}>
+                Player {member.clientId}
+              </div>
+
+              {member.helperCharacterName && (
+                <div style={styles.helperName}>
+                  Helping: {member.helperCharacterName}
+                </div>
+              )}
+            </div>
+
+            {index === 0 && (
+              <div style={styles.nextLabel}>
+                CURRENT TURN
+              </div>
+            )}
           </div>
-        </div>
+        ))}
       </div>
+    )}
+  </div>
+
+  <div style={styles.centerBox}>
+    <h2 style={styles.centerHeading}>AI Response</h2>
+    <p style={styles.centerText}>
+      The AI GM describes the next scene or reacts to player actions.
+    </p>
+  </div>
+
+  <div style={styles.centerBox}>
+    <h2 style={styles.centerHeading}>Player Action</h2>
+    <p style={styles.centerText}>
+      Player actions appear here as they are submitted.
+    </p>
+  </div>
+
+  <div style={styles.centerBox}>
+    <h2 style={styles.centerHeading}>Live Chat Log</h2>
+
+    <div style={styles.chatLog}>
+      {messages.length === 0 && (
+        <div style={styles.chatEmpty}>No messages yet.</div>
+      )}
+
+      {messages.map((m, i) => (
+        <div key={i} style={styles.chatLine}>
+          <strong>{m.from.includes("client") ? m.from : "GM"}:</strong>{" "}
+          {m.text}
+        </div>
+      ))}
+    </div>
+  </div>
+
+</div>
+      
 
       {/* RIGHT SIDE — Persona-style party status */}
       <div style={styles.rightColumn}>
@@ -224,6 +272,12 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.4,
     color: "#CCCCCC",
   },
+  helperName: {
+  fontSize: "13px",
+  color: "#4CC9A3",
+  marginTop: "4px",
+  fontWeight: 600,
+},
 
   chatLog: {
     maxHeight: "200px",
@@ -361,4 +415,39 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#888888",
     textAlign: "right",
   },
+  queueRow: {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  backgroundColor: "#FFFFFF",
+  color: "#2B2B2B",
+  padding: "12px 16px",
+  borderRadius: "6px",
+  border: "1px solid #DDD",
+  marginBottom: "8px",
+},
+
+activeQueueRow: {
+  border: "2px solid #B4473A",
+},
+
+queueName: {
+  fontSize: "17px",
+  fontWeight: 700,
+},
+
+queuePlayer: {
+  fontSize: "13px",
+  color: "#555555",
+  marginTop: "4px",
+},
+
+nextLabel: {
+  backgroundColor: "#B4473A",
+  color: "#FFFFFF",
+  padding: "5px 8px",
+  borderRadius: "4px",
+  fontSize: "11px",
+  fontWeight: 700,
+},
 };

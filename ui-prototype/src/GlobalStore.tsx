@@ -20,6 +20,13 @@ export type HostSession = {
   createdAt: number;
 };
 
+export type QueueMember = {
+  clientId: number;
+  characterName: string;
+  helperClientId?: number;
+  helperCharacterName?: string;
+};
+
 type Store = {
   characters: Character[];
   messages: Message[];
@@ -27,10 +34,16 @@ type Store = {
   selectedHost: string | null;
 
   hostClients: Record<string, { client1: boolean; client2: boolean }>;
+  queue: QueueMember[];
 
+  helpUser: (helperClientId: number, targetClientId: number) => void;  
   createHost: (name: string) => HostSession;
   joinHost: (hostId: string) => void;
   markClientJoined: (hostId: string, clientId: number) => void;
+
+  enterQueue: (member: QueueMember) => void;
+  leaveQueue: (clientId: number) => void;
+  endTurn: (clientId: number) => void;
 
   addCharacter: (c: Character) => void;
   addMessage: (m: Message) => void;
@@ -69,6 +82,8 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
     return saved ? JSON.parse(saved) : {};
   });
 
+  const [queue, setQueue] = useState<QueueMember[]>([]);
+
   // Persist hosts + client locks
   useEffect(() => {
     localStorage.setItem("hosts", JSON.stringify(hosts));
@@ -86,6 +101,22 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
       if (data.type === "host-created") {
         setHosts((prev) => [...prev, data.host]);
       }
+
+      if (data.type === "queue-help") {
+  setQueue((prev) =>
+    prev.map((member) => {
+      if (member.clientId === data.targetClientId) {
+        return {
+          ...member,
+          helperClientId: data.helperClientId,
+          helperCharacterName: data.helperCharacterName,
+        };
+      }
+
+      return member;
+    })
+  );
+}
 
       if (data.type === "client-joined") {
         setHostClients((prev) => ({
@@ -111,6 +142,61 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
           [data.hostId]: Math.max(0, (prev[data.hostId] ?? 6) + data.delta),
         }));
       }
+      if (data.type === "queue-enter") {
+        setQueue((prev) => {
+          if (
+            prev.some(
+              (member) => member.clientId === data.member.clientId
+            )
+          ) {
+            return prev;
+          }
+
+          return [...prev, data.member];
+        });
+      }
+
+      if (data.type === "queue-leave") {
+  setQueue((prev) =>
+    prev
+      .filter((member) => member.clientId !== data.clientId)
+      .map((member) => {
+        if (member.helperClientId === data.clientId) {
+          return {
+            ...member,
+            helperClientId: undefined,
+            helperCharacterName: undefined,
+          };
+        }
+
+        return member;
+      })
+  );
+}
+
+      if (data.type === "queue-end-turn") {
+  setQueue((prev) => {
+    if (prev.length === 0) {
+      return prev;
+    }
+
+    if (prev[0].clientId !== data.clientId) {
+      return prev;
+    }
+
+    return prev.slice(1).map((member) => {
+      if (member.helperClientId === data.clientId) {
+        return {
+          ...member,
+          helperClientId: undefined,
+          helperCharacterName: undefined,
+        };
+      }
+
+      return member;
+    });
+  });
+}
     };
   }, []);
 
@@ -151,6 +237,96 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
     });
   };
 
+  const enterQueue = (member: QueueMember) => {
+    setQueue((prev) => {
+      // Prevent the same player from entering the queue twice.
+      if (prev.some((item) => item.clientId === member.clientId)) {
+        return prev;
+      }
+
+      return [...prev, member];
+    });
+
+    channel.postMessage({
+      type: "queue-enter",
+      member,
+    });
+  };
+
+  const leaveQueue = (clientId: number) => {
+  setQueue((prev) =>
+    prev
+      .filter((member) => member.clientId !== clientId)
+      .map((member) => {
+        // Remove this player as a helper if they were helping someone.
+        if (member.helperClientId === clientId) {
+          return {
+            ...member,
+            helperClientId: undefined,
+            helperCharacterName: undefined,
+          };
+        }
+
+        return member;
+      })
+  );
+
+  channel.postMessage({
+    type: "queue-leave",
+    clientId,
+  });
+};
+
+  const helpUser = (
+  helperClientId: number,
+  targetClientId: number
+) => {
+  const helper = characters.find(
+    (character) => character.clientId === helperClientId
+  );
+
+  if (!helper) {
+    return;
+  }
+
+  setQueue((prev) =>
+    prev.map((member) => {
+      if (member.clientId === targetClientId) {
+        return {
+          ...member,
+          helperClientId,
+          helperCharacterName: helper.name,
+        };
+      }
+
+      return member;
+    })
+  );
+
+  channel.postMessage({
+    type: "queue-help",
+    helperClientId,
+    helperCharacterName: helper.name,
+    targetClientId,
+  });
+};
+
+  const endTurn = (clientId: number) => {
+    setQueue((prev) => {
+      // Only the player whose turn it currently is can end the turn.
+      if (prev.length === 0 || prev[0].clientId !== clientId) {
+        return prev;
+      }
+
+      return prev.slice(1);
+    });
+
+    channel.postMessage({
+      type: "queue-end-turn",
+      clientId,
+    });
+  };
+
   // Add character
   const addCharacter = (c: Character) => {
     setCharacters((prev) => [...prev, c]);
@@ -186,13 +362,18 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
         hosts,
         selectedHost,
         hostClients,
+        queue,
         createHost,
         joinHost,
         markClientJoined,
+        enterQueue,
+        endTurn,
         addCharacter,
         addMessage,
         hullIntegrity,
         updateHullIntegrity,
+        helpUser,
+        leaveQueue,
       }}
     >
       {children}

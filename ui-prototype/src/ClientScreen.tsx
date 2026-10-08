@@ -4,11 +4,26 @@ import { useGlobalStore } from "./GlobalStore";
 
 export default function ClientScreen({ clientId }: { clientId?: number }) {
   const navigate = useNavigate();
-  const { addCharacter, addMessage, updateHullIntegrity, hullIntegrity } = useGlobalStore();
+  const {
+  addCharacter,
+  addMessage,
+  messages,
+  queue,
+  enterQueue,
+  endTurn,
+  helpUser,
+  leaveQueue,
+  updateHullIntegrity,
+  hullIntegrity,
+} = useGlobalStore();
   const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
   const won = hullIntegrity >= 12;
 
+
   const [mode, setMode] = useState<"create" | "preview" | "chat">("create");
+  const [waitingForRoll, setWaitingForRoll] = useState(false);
+  const [lastRoll, setLastRoll] = useState<number | null>(null);
+  const [showHelpOptions, setShowHelpOptions] = useState(false);
 
   const [character, setCharacter] = useState({
     name: "",
@@ -30,6 +45,128 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
     "Rook Starborn",
     "Juno Drift"
   ];
+
+  const isInQueue =
+  clientId !== undefined &&
+  queue.some((member) => member.clientId === clientId);
+
+const isMyTurn =
+  clientId !== undefined &&
+  queue.length > 0 &&
+  queue[0].clientId === clientId;
+
+const helpTargets =
+  clientId === undefined
+    ? []
+    : queue.filter(
+        (member) =>
+          member.clientId !== clientId &&
+          member.helperClientId === undefined
+      );
+
+const canHelpUser =
+  clientId !== undefined &&
+  !isMyTurn &&
+  helpTargets.length > 0;
+
+const handleEnterQueue = () => {
+  if (clientId === undefined || isInQueue) return;
+
+  enterQueue({
+    clientId,
+    characterName: character.name,
+  });
+
+  addMessage({
+    from: `client${clientId}`,
+    text: `${character.name} entered the player queue.`,
+  });
+};
+
+const handleLeaveQueue = () => {
+  if (clientId === undefined || !isInQueue) return;
+
+  leaveQueue(clientId);
+
+  addMessage({
+    from: `client${clientId}`,
+    text: `${character.name} left the player queue.`,
+  });
+};
+
+const handleHelpUser = (targetClientId: number) => {
+  if (!canHelpUser || clientId === undefined) return;
+
+  const target = queue.find(
+    (member) => member.clientId === targetClientId
+  );
+
+  if (!target) return;
+
+  helpUser(clientId, targetClientId);
+
+  addMessage({
+    from: `client${clientId}`,
+    text: `${character.name} is helping ${target.characterName}.`,
+  });
+
+  setShowHelpOptions(false);
+};
+
+const handleAction = (action: string) => {
+  if (!isMyTurn) return;
+
+  addMessage({
+    from: `client${clientId}`,
+    text: `Action: ${action}`,
+  });
+
+  // These actions require a dice roll.
+  const requiresRoll =
+    action === "Attack" ||
+    action === "Investigate";
+
+  if (requiresRoll) {
+    setWaitingForRoll(true);
+    setLastRoll(null);
+
+    addMessage({
+      from: "gm",
+      text: `${action} requires a roll. Roll the dice to resolve your action.`,
+    });
+
+    return;
+  }
+
+  // Actions such as Defend or Negotiate can resolve immediately.
+  addMessage({
+    from: "gm",
+    text: `Your ${action.toLowerCase()} action is resolved. Your turn is over.`,
+  });
+
+  endTurn(clientId!);
+};
+
+const handleRoll = () => {
+  if (!isMyTurn || !waitingForRoll || clientId === undefined) return;
+
+  const roll = Math.floor(Math.random() * 6) + 1;
+
+  setLastRoll(roll);
+  setWaitingForRoll(false);
+
+  addMessage({
+    from: `client${clientId}`,
+    text: `Rolled a ${roll}.`,
+  });
+
+  addMessage({
+    from: "gm",
+    text: `The action is resolved with a roll of ${roll}. Your turn is over.`,
+  });
+
+  endTurn(clientId);
+};
 
   const randomizeName = () => {
     const name = randomNames[Math.floor(Math.random() * randomNames.length)];
@@ -55,13 +192,21 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
   };
 
   const sendMessage = () => {
-    if (!text.trim()) return;
+  if (!text.trim() || !isMyTurn || waitingForRoll) return;
 
-    addMessage({ from: `client${clientId ?? ""}`, text });
-    addMessage({ from: "gm", text: "The scene shifts as your action influences the unfolding narrative." });
+  addMessage({
+    from: `client${clientId ?? ""}`,
+    text,
+  });
 
-    setText("");
-  };
+  addMessage({
+    from: "gm",
+    text: "The scene shifts as your action influences the unfolding narrative.",
+  });
+
+  endTurn(clientId!);
+  setText("");
+};
 
   const sendAction = (action: string) => {
     addMessage({ from: `client${clientId ?? ""}`, text: `Action: ${action}` });
@@ -214,12 +359,130 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
 
       <div style={styles.historyBox}></div>
 
-      <div style={styles.actionRow}>
-        <button style={styles.actionButton} onClick={() => sendAction("Attack")}>Attack</button>
-        <button style={styles.actionButton} onClick={() => sendAction("Defend")}>Defend</button>
-        <button style={styles.actionButton} onClick={() => sendAction("Investigate")}>Investigate</button>
-        <button style={styles.actionButton} onClick={() => sendAction("Negotiate")}>Negotiate</button>
-      </div>
+      <div style={styles.queueStatus}>
+  {!isInQueue && (
+    <button
+      style={styles.queueButton}
+      onClick={handleEnterQueue}
+    >
+      Enter Queue
+    </button>
+  )}
+
+  {isInQueue && (
+    <button
+      style={styles.leaveButton}
+      onClick={handleLeaveQueue}
+    >
+      Leave Queue
+    </button>
+  )}
+
+  {!isMyTurn && (
+    <button
+      style={{
+        ...styles.helpButton,
+        ...(!canHelpUser ? styles.disabledHelpButton : {}),
+      }}
+      disabled={!canHelpUser}
+      onClick={() => setShowHelpOptions(!showHelpOptions)}
+    >
+      Help
+    </button>
+  )}
+
+  {isInQueue && !isMyTurn && (
+    <div style={styles.waitingText}>
+      Waiting for your turn...
+    </div>
+  )}
+
+  {isMyTurn && (
+    <div style={styles.turnText}>
+      It is your turn!
+    </div>
+  )}
+</div>
+
+{showHelpOptions && canHelpUser && (
+  <div style={styles.helpOptions}>
+    <div style={styles.helpTitle}>
+      Who do you want to help?
+    </div>
+
+    {helpTargets.map((member) => (
+      <button
+        key={member.clientId}
+        style={styles.helpOption}
+        onClick={() => handleHelpUser(member.clientId)}
+      >
+        {member.characterName}
+      </button>
+    ))}
+
+    <button
+      style={styles.cancelHelpButton}
+      onClick={() => setShowHelpOptions(false)}
+    >
+      Cancel
+    </button>
+  </div>
+)}
+
+<div style={styles.actionRow}>
+  <button
+    style={styles.actionButton}
+    disabled={!isMyTurn || waitingForRoll}
+    onClick={() => handleAction("Attack")}
+  >
+    Attack
+  </button>
+
+  <button
+    style={styles.actionButton}
+    disabled={!isMyTurn || waitingForRoll}
+    onClick={() => handleAction("Defend")}
+  >
+    Defend
+  </button>
+
+  <button
+    style={styles.actionButton}
+    disabled={!isMyTurn || waitingForRoll}
+    onClick={() => handleAction("Investigate")}
+  >
+    Investigate
+  </button>
+
+  <button
+    style={styles.actionButton}
+    disabled={!isMyTurn || waitingForRoll}
+    onClick={() => handleAction("Negotiate")}
+  >
+    Negotiate
+  </button>
+</div>
+
+{waitingForRoll && (
+  <div style={styles.rollArea}>
+    <p style={styles.rollText}>
+      Your action requires a dice roll.
+    </p>
+
+    <button
+      style={styles.rollButton}
+      onClick={handleRoll}
+    >
+      Roll Dice
+    </button>
+  </div>
+)}
+
+{lastRoll !== null && (
+  <div style={styles.rollResult}>
+    You rolled: <strong>{lastRoll}</strong>
+  </div>
+)}
 
       <div style={styles.inputContainer}>
         <input
@@ -494,6 +757,132 @@ const styles = {
     border: "none",
     cursor: "pointer",
   },
+  queueStatus: {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: "16px",
+},
+
+queueButton: {
+  backgroundColor: "#2F4F3A",
+  color: "#FFFFFF",
+  padding: "12px 24px",
+  borderRadius: "6px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "16px",
+  fontWeight: 600,
+},
+
+waitingText: {
+  color: "#555555",
+  fontSize: "16px",
+  fontWeight: 600,
+},
+
+turnText: {
+  color: "#2F4F3A",
+  fontSize: "18px",
+  fontWeight: 700,
+},
+
+rollArea: {
+  textAlign: "center",
+  marginTop: "16px",
+  padding: "16px",
+  backgroundColor: "#E8E2D6",
+  borderRadius: "8px",
+},
+
+rollText: {
+  color: "#2B2B2B",
+  marginBottom: "12px",
+},
+
+rollButton: {
+  backgroundColor: "#B4473A",
+  color: "#FFFFFF",
+  padding: "12px 24px",
+  borderRadius: "6px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "16px",
+  fontWeight: 600,
+},
+
+rollResult: {
+  textAlign: "center",
+  color: "#2B2B2B",
+  marginTop: "12px",
+  fontSize: "18px",
+},
+
+helpButton: {
+  backgroundColor: "#4CC9A3",
+  color: "#000000",
+  padding: "12px 24px",
+  borderRadius: "6px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "16px",
+  fontWeight: 600,
+  marginLeft: "12px",
+},
+  disabledHelpButton: {
+    backgroundColor: "#555",
+    color: "#999",
+    cursor: "not-allowed",
+  },
+
+  helpOptions: {
+    backgroundColor: "#111",
+    border: "2px solid #4CC9A3",
+    borderRadius: "8px",
+    padding: "16px",
+    margin: "0 16px 16px 16px",
+    textAlign: "center",
+  },
+
+  helpTitle: {
+    color: "#4CC9A3",
+    fontSize: "18px",
+    fontWeight: 700,
+    marginBottom: "12px",
+  },
+
+  helpOption: {
+    display: "block",
+    width: "100%",
+    backgroundColor: "#4CC9A3",
+    color: "#000",
+    border: "none",
+    borderRadius: "6px",
+    padding: "10px",
+    marginBottom: "8px",
+    cursor: "pointer",
+    fontWeight: 700,
+  },
+
+  cancelHelpButton: {
+    backgroundColor: "#333",
+    color: "#FFF",
+    border: "none",
+    borderRadius: "6px",
+    padding: "8px 16px",
+    cursor: "pointer",
+  },
+  leaveButton: {
+  backgroundColor: "#B4473A",
+  color: "#FFFFFF",
+  padding: "12px 24px",
+  borderRadius: "6px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "16px",
+  fontWeight: 600,
+  marginRight: "12px",
+},
 };
 
 

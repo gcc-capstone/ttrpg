@@ -22,6 +22,7 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
 
   const [mode, setMode] = useState<"create" | "preview" | "chat">("create");
   const [waitingForRoll, setWaitingForRoll] = useState(false);
+  const [pendingRollAction, setPendingRollAction] = useState<string | null>(null);
   const [lastRoll, setLastRoll] = useState<number | null>(null);
   const [showHelpOptions, setShowHelpOptions] = useState(false);
 
@@ -128,6 +129,7 @@ const handleAction = (action: string) => {
 
   if (requiresRoll) {
     setWaitingForRoll(true);
+    setPendingRollAction(action);
     setLastRoll(null);
 
     addMessage({
@@ -137,6 +139,8 @@ const handleAction = (action: string) => {
 
     return;
   }
+
+  if (action === "Defend") updateHullIntegrity(1);
 
   // Actions such as Defend or Negotiate can resolve immediately.
   addMessage({
@@ -154,6 +158,8 @@ const handleRoll = () => {
 
   setLastRoll(roll);
   setWaitingForRoll(false);
+  if (pendingRollAction === "Attack") updateHullIntegrity(-1);
+  setPendingRollAction(null);
 
   addMessage({
     from: `client${clientId}`,
@@ -207,19 +213,6 @@ const handleRoll = () => {
   endTurn(clientId!);
   setText("");
 };
-
-  const sendAction = (action: string) => {
-    addMessage({ from: `client${clientId ?? ""}`, text: `Action: ${action}` });
-
-    // Only Attack and Defend affect the ship's hull integrity.
-    if (action === "Attack") {
-      updateHullIntegrity(-1);
-    } else if (action === "Defend") {
-      updateHullIntegrity(1);
-    }
-
-    addMessage({ from: "gm", text: "Your action ripples through the scene." });
-  };
 
   // CREATE SCREEN
   if (mode === "create") {

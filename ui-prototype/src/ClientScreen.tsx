@@ -20,8 +20,7 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
   const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
   const won = hullIntegrity >= 12;
 
-
-  const [mode, setMode] = useState<"create" | "preview" | "chat">("create");
+  const [mode, setMode] = useState<"create" | "preview" | "roll" | "chat">("create");
   const [waitingForRoll, setWaitingForRoll] = useState(false);
   const [pendingRollAction, setPendingRollAction] = useState<string | null>(null);
   const [lastRoll, setLastRoll] = useState<number | null>(null);
@@ -136,66 +135,6 @@ const handleUndoHelp = () => {
   }
 };
 
-const handleAction = (action: string) => {
-  if (!isMyTurn) return;
-
-  addMessage({
-    from: `client${clientId}`,
-    text: `Action: ${action}`,
-  });
-
-  // These actions require a dice roll.
-  const requiresRoll =
-    action === "Attack" ||
-    action === "Investigate";
-
-  if (requiresRoll) {
-    setWaitingForRoll(true);
-    setPendingRollAction(action);
-    setLastRoll(null);
-
-    addMessage({
-      from: "gm",
-      text: `${action} requires a roll. Roll the dice to resolve your action.`,
-    });
-
-    return;
-  }
-
-  if (action === "Defend") updateHullIntegrity(1);
-
-  // Actions such as Defend or Negotiate can resolve immediately.
-  addMessage({
-    from: "gm",
-    text: `Your ${action.toLowerCase()} action is resolved. Your turn is over.`,
-  });
-
-  endTurn(clientId!);
-};
-
-const handleRoll = () => {
-  if (!isMyTurn || !waitingForRoll || clientId === undefined) return;
-
-  const roll = Math.floor(Math.random() * 6) + 1;
-
-  setLastRoll(roll);
-  setWaitingForRoll(false);
-  if (pendingRollAction === "Attack") updateHullIntegrity(-1);
-  setPendingRollAction(null);
-
-  addMessage({
-    from: `client${clientId}`,
-    text: `Rolled a ${roll}.`,
-  });
-
-  addMessage({
-    from: "gm",
-    text: `The action is resolved with a roll of ${roll}. Your turn is over.`,
-  });
-
-  endTurn(clientId);
-};
-
   const randomizeName = () => {
     const name = randomNames[Math.floor(Math.random() * randomNames.length)];
     setCharacter((prev) => ({ ...prev, name }));
@@ -220,21 +159,35 @@ const handleRoll = () => {
   };
 
   const sendMessage = () => {
-  if (!text.trim() || !isMyTurn || waitingForRoll) return;
+    if (!text.trim() || !isMyTurn) { return; }
 
-  addMessage({
-    from: `client${clientId ?? ""}`,
-    text,
-  });
+    addMessage({ from: `client${clientId ?? ""}`, text });
+    setText("");
 
-  addMessage({
-    from: "gm",
-    text: "The scene shifts as your action influences the unfolding narrative.",
-  });
+    setMode("roll");
+  };
 
-  endTurn(clientId!);
-  setText("");
-};
+  const sendAction = (action: string, rollRequired: bool) => {
+    if (!isMyTurn) { return; }
+    addMessage({ from: `client${clientId ?? ""}`, text: `Action: ${action}` });
+
+    if (action === "Defend") { updateHullIntegrity(1); }
+    if (action === "Attack") { updateHullIntegrity(-1); }
+
+    if (rollRequired) { setMode("roll"); }
+    else { sendGMResponse(); }
+  };
+
+  const sendGMResponse = () => {
+    addMessage({ from: "gm", text: "Your action ripples through the scene." });
+    endTurn(clientId!);
+    setMode("chat");
+  }
+
+  const generateDice = (numDice: int) => {
+    for (let i = 0; i < numDice; i++) { addMessage({ from: "gm", text: "You rolled a " + (Math.floor(Math.random() * 6) + 1).toString() + "!" }); }
+    sendGMResponse();
+  }
 
   // CREATE SCREEN
   if (mode === "create") {
@@ -364,6 +317,17 @@ const handleRoll = () => {
     );
   }
 
+  // ROLL DICE SCREEN
+  if (mode === "roll") {
+    return (
+      <div style={styles.page}>
+        <div style={styles.actionRow}>
+          <button style={styles.actionButton} onClick={() => generateDice(3)}>Roll!</button>
+        </div>
+      </div>
+    );
+  }
+
   // CHAT SCREEN
   return (
     <div style={styles.page}>
@@ -458,57 +422,35 @@ const handleRoll = () => {
 <div style={styles.actionRow}>
   <button
     style={styles.actionButton}
-    disabled={!isMyTurn || waitingForRoll}
-    onClick={() => handleAction("Attack")}
+    disabled={!isMyTurn}
+    onClick={() => sendAction("Attack", false)}
   >
     Attack
   </button>
 
   <button
     style={styles.actionButton}
-    disabled={!isMyTurn || waitingForRoll}
-    onClick={() => handleAction("Defend")}
+    disabled={!isMyTurn}
+    onClick={() => sendAction("Defend", false)}
   >
     Defend
   </button>
 
   <button
     style={styles.actionButton}
-    disabled={!isMyTurn || waitingForRoll}
-    onClick={() => handleAction("Investigate")}
+    disabled={!isMyTurn}
+    onClick={() => sendAction("Investigate", true)}
   >
     Investigate
   </button>
 
   <button
     style={styles.actionButton}
-    disabled={!isMyTurn || waitingForRoll}
-    onClick={() => handleAction("Negotiate")}
+    disabled={!isMyTurn}
+    onClick={() => sendAction("Negotiate", true)}
   >
     Negotiate
   </button>
-</div>
-
-{waitingForRoll && (
-  <div style={styles.rollArea}>
-    <p style={styles.rollText}>
-      Your action requires a dice roll.
-    </p>
-
-    <button
-      style={styles.rollButton}
-      onClick={handleRoll}
-    >
-      Roll Dice
-    </button>
-  </div>
-)}
-
-{lastRoll !== null && (
-  <div style={styles.rollResult}>
-    You rolled: <strong>{lastRoll}</strong>
-  </div>
-)}
 
       <div style={styles.inputContainer}>
         <input
@@ -524,6 +466,7 @@ const handleRoll = () => {
       </div>
 
       <div style={styles.keyboardArea}>Keyboard</div>
+</div>
 
       {gameOver && (
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.92)",zIndex:2000,display:"grid",placeItems:"center",padding:20}}>

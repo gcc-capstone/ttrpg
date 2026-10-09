@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
 
 export default function ClientScreen({ clientId }: { clientId?: number }) {
+  const navigate = useNavigate();
   const {
   addCharacter,
   addMessage,
@@ -12,11 +14,16 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
   helpUser,
   undoHelp,
   leaveQueue,
+  updateHullIntegrity,
+  hullIntegrity,
 } = useGlobalStore();
+  const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
+  const won = hullIntegrity >= 12;
 
 
   const [mode, setMode] = useState<"create" | "preview" | "chat">("create");
   const [waitingForRoll, setWaitingForRoll] = useState(false);
+  const [pendingRollAction, setPendingRollAction] = useState<string | null>(null);
   const [lastRoll, setLastRoll] = useState<number | null>(null);
   const [showHelpOptions, setShowHelpOptions] = useState(false);
 
@@ -144,6 +151,7 @@ const handleAction = (action: string) => {
 
   if (requiresRoll) {
     setWaitingForRoll(true);
+    setPendingRollAction(action);
     setLastRoll(null);
 
     addMessage({
@@ -153,6 +161,8 @@ const handleAction = (action: string) => {
 
     return;
   }
+
+  if (action === "Defend") updateHullIntegrity(1);
 
   // Actions such as Defend or Negotiate can resolve immediately.
   addMessage({
@@ -170,6 +180,8 @@ const handleRoll = () => {
 
   setLastRoll(roll);
   setWaitingForRoll(false);
+  if (pendingRollAction === "Attack") updateHullIntegrity(-1);
+  setPendingRollAction(null);
 
   addMessage({
     from: `client${clientId}`,
@@ -223,11 +235,6 @@ const handleRoll = () => {
   endTurn(clientId!);
   setText("");
 };
-
-  const sendAction = (action: string) => {
-    addMessage({ from: `client${clientId ?? ""}`, text: `Action: ${action}` });
-    addMessage({ from: "gm", text: "Your action ripples through the scene." });
-  };
 
   // CREATE SCREEN
   if (mode === "create") {
@@ -518,6 +525,15 @@ const handleRoll = () => {
 
       <div style={styles.keyboardArea}>Keyboard</div>
 
+      {gameOver && (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.92)",zIndex:2000,display:"grid",placeItems:"center",padding:20}}>
+          <div style={{background:"#111",border:`2px solid ${won ? "#4CC9A3" : "#B4473A"}`,borderRadius:12,padding:32,textAlign:"center",maxWidth:480}}>
+            <h1 style={{color:won ? "#4CC9A3" : "#B4473A"}}>{won ? "VICTORY" : "DEFEAT"}</h1>
+            <h2 style={{color:"#fff"}}>{won ? "The Crew Wins!" : "The Ship Was Destroyed"}</h2>
+            <button onClick={() => navigate("/lobby")} style={{marginTop:18,padding:"12px 22px",background:"#4CC9A3",color:"#000",border:0,borderRadius:8,fontWeight:700,cursor:"pointer"}}>Back to Lobby</button>
+          </div>
+        </div>
+      )}
       {showStats && (
         <div style={styles.statsPanel}>
           <h2 style={styles.statsHeader}>Character Stats</h2>

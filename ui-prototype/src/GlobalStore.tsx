@@ -49,6 +49,8 @@ type Store = {
 
   addCharacter: (c: Character) => void;
   addMessage: (m: Message) => void;
+  hullIntegrity: number;
+  updateHullIntegrity: (delta: number) => void;
 };
 
 const GlobalContext = createContext<Store | null>(null);
@@ -66,6 +68,13 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
 
   const [characters, setCharacters] = useState<Character[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+
+  // Hull integrity belongs to each session, not to the whole application.
+  const [hullByHost, setHullByHost] = useState<Record<string, number>>(() => {
+    try { return JSON.parse(localStorage.getItem("hullByHost") || "{}"); }
+    catch { return {}; }
+  });
+  const hullIntegrity = selectedHost ? (hullByHost[selectedHost] ?? 6) : 6;
 
   // Track which clients have joined each host
   const [hostClients, setHostClients] = useState<
@@ -127,6 +136,13 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
 
       if (data.type === "addMessage") {
         setMessages((prev) => [...prev, data.payload]);
+      }
+
+      if (data.type === "hull-integrity" && data.hostId) {
+        setHullByHost((prev) => ({
+          ...prev,
+          [data.hostId]: Math.max(0, (prev[data.hostId] ?? 6) + data.delta),
+        }));
       }
       if (data.type === "queue-enter") {
         setQueue((prev) => {
@@ -211,6 +227,7 @@ if (data.type === "queue-undo-help") {
     };
 
     setHosts((prev) => [...prev, newHost]);
+    setHullByHost((prev) => ({ ...prev, [newHost.id]: 6 }));
     channel.postMessage({ type: "host-created", host: newHost });
 
     return newHost; // critical for navigation
@@ -361,6 +378,21 @@ const undoHelp = (helperClientId: number) => {
     channel.postMessage({ type: "addMessage", payload: m });
   };
 
+  // Change hull integrity from client actions.
+  // A delta is broadcast so multiple tabs can contribute changes.
+  const updateHullIntegrity = (delta: number) => {
+    if (!selectedHost) return;
+    setHullByHost((prev) => ({
+      ...prev,
+      [selectedHost]: Math.max(0, (prev[selectedHost] ?? 6) + delta),
+    }));
+    channel.postMessage({ type: "hull-integrity", hostId: selectedHost, delta });
+  };
+
+  useEffect(() => {
+    localStorage.setItem("hullByHost", JSON.stringify(hullByHost));
+  }, [hullByHost]);
+
   return (
     <GlobalContext.Provider
       value={{
@@ -377,6 +409,8 @@ const undoHelp = (helperClientId: number) => {
         endTurn,
         addCharacter,
         addMessage,
+        hullIntegrity,
+        updateHullIntegrity,
         helpUser,
         undoHelp,
         leaveQueue,

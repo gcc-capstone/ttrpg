@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
 
@@ -14,6 +14,8 @@ export default function HostScreen() {
     hullIntegrity,
   } = useGlobalStore();
 
+  const [mode, setMode] = useState<"create" | "edit" | "play">("create");
+  const [tone, setTone] = useState<string>("");
   const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
   const won = hullIntegrity >= 12;
 
@@ -36,18 +38,56 @@ export default function HostScreen() {
     </div>;
   }
 
+  if (mode === "create") {
+    return (
+      <div style={styles.createPage}>
+        <h1 style={styles.createHeading}>Create Your Campaign</h1>
+
+        <label style={styles.label}>
+          Tone
+          <input
+            style={styles.input}
+            value={tone}
+            onChange={(e) =>
+              setTone(e.target.value)
+            }
+          />
+        </label>
+
+        <button style={styles.createButton} onClick={() => setMode("play")}>
+          Start Campaign
+        </button>
+      </div>
+    );
+  }
+
+  if (mode === "edit") {
+    return (
+      <div style={styles.createPage}>
+        <h1 style={styles.createHeading}>Edit Your Campaign</h1>
+
+        <label style={styles.label}>
+          Tone
+          <input
+            style={styles.input}
+            value={tone}
+            onChange={(e) =>
+              setTone(e.target.value)
+            }
+          />
+        </label>
+
+        <button style={styles.createButton} onClick={() => setMode("play")}>
+          Start Campaign
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.page}>
       {/* LEFT SIDE — angled portraits */}
       <div style={styles.leftColumn}>
-        {characters.length === 0 && (
-          <>
-            <div style={styles.portraitCard}>Portrait 1</div>
-            <div style={styles.portraitCard}>Portrait 2</div>
-            <div style={styles.portraitCard}>Portrait 3</div>
-          </>
-        )}
-
         {characters.map((c, i) => (
           <div key={i} style={styles.portraitCard}>
             {c.name}
@@ -135,6 +175,12 @@ export default function HostScreen() {
       
 
       {/* RIGHT SIDE — Persona-style party status */}
+      <div style = { styles.rightColumn }>
+        <button style={styles.navButton} onClick={() => setMode("edit")}>
+          Edit Campaign
+        </button>
+      </div>
+
       <div style={styles.rightColumn}>
         {characters.length === 0 && (
           <div style={styles.noPlayers}>No characters created yet.</div>
@@ -214,6 +260,53 @@ function getHullColor(health: number) {
 }
 
 const styles: Record<string, React.CSSProperties> = {
+  createPage: {
+    padding: "24px",
+    backgroundColor: "#111",
+    color: "#FFF",
+    height: "100vh",
+  },
+  createHeading: {
+    fontSize: "28px",
+    marginBottom: "20px",
+    color: "#4CC9A3",
+  },
+  label: {
+    display: "block",
+    marginBottom: "16px",
+    fontSize: "16px",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    marginTop: "6px",
+    borderRadius: "6px",
+    border: "2px solid #4CC9A3",
+    backgroundColor: "#000",
+    color: "#FFF",
+    fontSize: "16px",
+  },
+  createButton: {
+    marginTop: "20px",
+    backgroundColor: "#4CC9A3",
+    color: "#000",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    border: "none",
+    fontSize: "18px",
+    cursor: "pointer",
+    fontWeight: 700,
+  },
+  navButton: {
+    backgroundColor: "transparent",
+    color: "#4CC9A3",
+    border: "2px solid #4CC9A3",
+    borderRadius: "6px",
+    padding: "6px 10px",
+    textDecoration: "none",
+    fontSize: "13px",
+    fontWeight: 600,
+  },
   page: {
     display: "grid",
     gridTemplateColumns: "1fr 2fr 1fr",
@@ -223,7 +316,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "Arial, sans-serif",
     color: "#E0E0E0",
   },
-
   leftColumn: {
     display: "flex",
     flexDirection: "column",

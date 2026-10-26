@@ -167,7 +167,7 @@ const handleUndoHelp = () => {
     setMode("roll");
   };
 
-  const sendAction = (action: string, rollRequired: bool) => {
+  const sendAction = (action: string, rollRequired: boolean) => {
     if (!isMyTurn) { return; }
     addMessage({ from: `client${clientId ?? ""}`, text: `Action: ${action}` });
 
@@ -184,7 +184,7 @@ const handleUndoHelp = () => {
     setMode("chat");
   }
 
-  const generateDice = (numDice: int) => {
+  const generateDice = (numDice: number) => {
     for (let i = 0; i < numDice; i++) { addMessage({ from: "gm", text: "You rolled a " + (Math.floor(Math.random() * 6) + 1).toString() + "!" }); }
     sendGMResponse();
   }

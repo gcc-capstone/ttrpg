@@ -2,75 +2,52 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import { GlobalStoreProvider } from "./GlobalStore";
+import StartScreen from "./StartScreen";
 import StyleGuide from "./StyleGuide";
 import HostScreen from "./HostScreen";
 import ClientScreen from "./ClientScreen";
 import SessionLobby from "./SessionLobby";
 import RequireLobby from "./RequireLobby";
+import HostSetup from "./HostSetup";
 
 export default function App() {
   return (
     <GlobalStoreProvider>
       <BrowserRouter>
-        <div style={styles.page}>
-          <header style={styles.nav}>
-            <div style={styles.navLogo}>AI GM Prototype</div>
+        <Routes>
+          <Route path="/" element={<StartScreen />} />
+          <Route path="/lobby" element={<SessionLobby />} />
+          <Route path="/host-setup" element={<HostSetup />} />
 
-            <nav style={styles.navLinks}>
-              <Link to="/lobby" style={styles.navButton}>Lobby</Link>
-              <Link to="/style" style={styles.navButton}>Style Guide</Link>
-            </nav>
-          </header>
+          <Route
+            path="/host"
+            element={
+              <RequireLobby>
+                <HostScreen />
+              </RequireLobby>
+            }
+          />
 
-          <div style={styles.content}>
-            <Routes>
-              {/* LOBBY */}
-              <Route path="/" element={<SessionLobby />} />
-              <Route path="/lobby" element={<SessionLobby />} />
+          <Route
+            path="/client1"
+            element={
+              <RequireLobby>
+                <ClientScreen clientId={1} />
+              </RequireLobby>
+            }
+          />
 
-              {/* HOST (protected) */}
-              <Route
-                path="/host"
-                element={
-                  <RequireLobby>
-                    <HostScreen />
-                  </RequireLobby>
-                }
-              />
+          <Route
+            path="/client2"
+            element={
+              <RequireLobby>
+                <ClientScreen clientId={2} />
+              </RequireLobby>
+            }
+          />
 
-              {/* CLIENTS (protected) */}
-              <Route
-                path="/client1"
-                element={
-                  <RequireLobby>
-                    <ClientScreen clientId={1} />
-                  </RequireLobby>
-                }
-              />
-
-              <Route
-                path="/client2"
-                element={
-                  <RequireLobby>
-                    <ClientScreen clientId={2} />
-                  </RequireLobby>
-                }
-              />
-
-              <Route
-                path="/client"
-                element={
-                  <RequireLobby>
-                    <ClientScreen />
-                  </RequireLobby>
-                }
-              />
-
-              {/* STYLE GUIDE */}
-              <Route path="/style" element={<StyleGuide />} />
-            </Routes>
-          </div>
-        </div>
+          <Route path="/style" element={<StyleGuide />} />
+        </Routes>
       </BrowserRouter>
     </GlobalStoreProvider>
   );

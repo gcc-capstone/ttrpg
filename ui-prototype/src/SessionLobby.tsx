@@ -4,30 +4,46 @@ import { useGlobalStore } from "./GlobalStore";
 
 export default function SessionLobby() {
   const {
-    hosts,
     createHost,
-    joinHost,
+    joinHostByCode,
     hostClients,
     markClientJoined
   } = useGlobalStore();
 
   const [hostName, setHostName] = useState("");
+  const [joinCode, setJoinCode] = useState("");
+
   const navigate = useNavigate();
 
-  // Create a host and immediately navigate to HostScreen
+  // Create a host and navigate to HostScreen
   const handleCreateHost = () => {
     if (!hostName.trim()) return;
 
     const newHost = createHost(hostName);
-    joinHost(newHost.id);
-    navigate("/host");
+    navigate("/host-setup");
   };
 
-  // Join a host as Client1 or Client2
-  const handleJoin = (hostId: string, clientId: number) => {
-    joinHost(hostId);
-    markClientJoined(hostId, clientId);
-    navigate(clientId === 1 ? "/client1" : "/client2");
+  // Join a host using a join code
+  const handleJoinByCode = () => {
+    if (!joinCode.trim()) return;
+
+    const host = joinHostByCode(joinCode);
+    if (!host) {
+      alert("Invalid join code");
+      return;
+    }
+
+    const status = hostClients[host.id] || { client1: false, client2: false };
+
+    if (!status.client1) {
+      markClientJoined(host.id, 1);
+      navigate("/client1");
+    } else if (!status.client2) {
+      markClientJoined(host.id, 2);
+      navigate("/client2");
+    } else {
+      alert("Session full");
+    }
   };
 
   return (
@@ -50,51 +66,28 @@ export default function SessionLobby() {
         </button>
       </div>
 
-      {/* JOIN HOST */}
+      {/* JOIN BY CODE */}
       <div style={styles.section}>
         <h2>Join a Host Session</h2>
 
-        {hosts.length === 0 && (
-          <p style={{ color: "#AAA" }}>No hosts available. Create one above.</p>
-        )}
+        <input
+          style={styles.input}
+          placeholder="Enter Join Code"
+          value={joinCode}
+          onChange={(e) => setJoinCode(e.target.value)}
+        />
 
-        {hosts.map((host) => {
-          const status = hostClients[host.id] || {
-            client1: false,
-            client2: false,
-          };
-
-          return (
-            <div key={host.id} style={styles.hostRow}>
-              <span>{host.name}</span>
-
-              {/* CLIENT 1 BUTTON */}
-              <button
-                style={{
-                  ...styles.button,
-                  ...(status.client1 ? styles.disabledButton : {})
-                }}
-                disabled={status.client1}
-                onClick={() => handleJoin(host.id, 1)}
-              >
-                {status.client1 ? "Client 1 Taken" : "Join as Client 1"}
-              </button>
-
-              {/* CLIENT 2 BUTTON */}
-              <button
-                style={{
-                  ...styles.button,
-                  ...(status.client2 ? styles.disabledButton : {})
-                }}
-                disabled={status.client2}
-                onClick={() => handleJoin(host.id, 2)}
-              >
-                {status.client2 ? "Client 2 Taken" : "Join as Client 2"}
-              </button>
-            </div>
-          );
-        })}
+        <button style={styles.button} onClick={handleJoinByCode}>
+          Join
+        </button>
       </div>
+      <button
+        style={styles.button}
+        onClick={() => navigate("/")}
+      >
+        ← Back
+    </button>
+
     </div>
   );
 }
@@ -117,6 +110,9 @@ const styles = {
     padding: "20px",
     borderRadius: "10px",
     marginBottom: "20px",
+    width: "100%",
+    maxWidth: "100%",
+    boxSizing: "border-box",
   },
   input: {
     width: "100%",
@@ -134,19 +130,6 @@ const styles = {
     borderRadius: "8px",
     fontWeight: 700,
     cursor: "pointer",
-    marginLeft: "10px",
-  },
-  disabledButton: {
-    backgroundColor: "#555",
-    color: "#999",
-    cursor: "not-allowed",
-    border: "2px solid #333",
-  },
-  hostRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "10px 0",
-    borderBottom: "1px solid #333",
-    alignItems: "center",
-  },
+    marginTop: "10px",
+  }
 };

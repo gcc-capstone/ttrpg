@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
 
+
+
 export default function HostScreen() {
   const navigate = useNavigate();
   const {
@@ -12,6 +14,7 @@ export default function HostScreen() {
     selectedHost,
     hosts,
     hullIntegrity,
+    scenario,
   } = useGlobalStore();
 
   const [mode, setMode] = useState<"create" | "edit" | "play">("create");
@@ -19,14 +22,8 @@ export default function HostScreen() {
   const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
   const won = hullIntegrity >= 12;
 
-  // Register this host session only once
-  React.useEffect(() => {
-    // If this host already exists, do nothing
-    if (selectedHost) return;
+  const host = hosts.find(h => h.id === selectedHost);
 
-    // Create a new host session
-    createHost("Host");
-  }, []);
 
   if (gameOver) {
     return <div style={{minHeight:"100vh",background:"#000",color:"#fff",display:"grid",placeItems:"center",fontFamily:"Arial"}}>
@@ -93,6 +90,21 @@ export default function HostScreen() {
             {c.name}
           </div>
         ))}
+        <div style={styles.scenarioBox}>
+        <h2>Scenario Overview</h2>
+
+        <p><strong>Threat:</strong> {scenario.threat}</p>
+        <p><strong>Goal:</strong> {scenario.goal}</p>
+        <p><strong>Object:</strong> {scenario.objectItem}</p>
+        <p><strong>Consequence:</strong> {scenario.consequence}</p>
+
+        {scenario.notes && (
+          <p><strong>Notes:</strong> {scenario.notes}</p>
+        )}
+
+        <p><strong>Players:</strong> {scenario.playerCount}</p>
+      </div>
+      
       </div>
 
       {/* CENTER — Queue + AI Response + Player Action + Chat Log */}
@@ -238,13 +250,21 @@ export default function HostScreen() {
             aria-label={`Hull integrity pointer at ${hullIntegrity}`}
           />
         </div>
-
+        {/* JOIN CODE — bottom-left */}
+        {host && (
+        <div style={styles.joinCodeBox}>
+          <div style={styles.joinCodeLabel}>JOIN CODE</div>
+          <div style={styles.joinCodeValue}>{host.code}</div>
+        </div>
+        )}
         {hullIntegrity > MAX_HULL_INTEGRITY && (
           <div style={styles.hullOverflow}>
             Hull integrity is above the visible hit points.
           </div>
         )}
       </div>
+      
+
     </div>
   );
 }
@@ -309,6 +329,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   page: {
     display: "grid",
+    position: "relative",
     gridTemplateColumns: "1fr 2fr 1fr",
     gridTemplateRows: "auto 80px",
     height: "100vh",
@@ -540,5 +561,38 @@ nextLabel: {
   borderRadius: "4px",
   fontSize: "11px",
   fontWeight: 700,
+},
+joinCodeBox: {
+  position: "absolute",
+  bottom: "20px",
+  left: "20px",
+  backgroundColor: "#111",
+  border: "3px solid #4CC9A3",
+  borderRadius: "10px",
+  padding: "12px 18px",
+  boxShadow: "0 0 12px rgba(76, 201, 255, 0.4)",
+  zIndex: 9999,
+},
+
+joinCodeLabel: {
+  fontSize: "12px",
+  color: "#4CC9A3",
+  fontWeight: 700,
+  letterSpacing: "1px",
+  marginBottom: "4px",
+},
+
+joinCodeValue: {
+  fontSize: "22px",
+  fontWeight: 700,
+  color: "#FFFFFF",
+},
+scenarioBox: {
+  background: "#111",
+  border: "2px solid #4CC9A3",
+  borderRadius: "12px",
+  padding: "20px",
+  marginBottom: "20px",
+  color: "#4CC9A3",
 },
 };

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
 
 
+
 export default function HostScreen() {
   const navigate = useNavigate();
   const {
@@ -13,6 +14,7 @@ export default function HostScreen() {
     selectedHost,
     hosts,
     hullIntegrity,
+    scenario,
   } = useGlobalStore();
 
   const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
@@ -48,6 +50,21 @@ export default function HostScreen() {
             {c.name}
           </div>
         ))}
+        <div style={styles.scenarioBox}>
+        <h2>Scenario Overview</h2>
+
+        <p><strong>Threat:</strong> {scenario.threat}</p>
+        <p><strong>Goal:</strong> {scenario.goal}</p>
+        <p><strong>Object:</strong> {scenario.objectItem}</p>
+        <p><strong>Consequence:</strong> {scenario.consequence}</p>
+
+        {scenario.notes && (
+          <p><strong>Notes:</strong> {scenario.notes}</p>
+        )}
+
+        <p><strong>Players:</strong> {scenario.playerCount}</p>
+      </div>
+      
       </div>
 
       {/* CENTER — Queue + AI Response + Player Action + Chat Log */}
@@ -477,5 +494,13 @@ joinCodeValue: {
   fontSize: "22px",
   fontWeight: 700,
   color: "#FFFFFF",
+},
+scenarioBox: {
+  background: "#111",
+  border: "2px solid #4CC9A3",
+  borderRadius: "12px",
+  padding: "20px",
+  marginBottom: "20px",
+  color: "#4CC9A3",
 },
 };

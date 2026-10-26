@@ -8,6 +8,7 @@ import HostScreen from "./HostScreen";
 import ClientScreen from "./ClientScreen";
 import SessionLobby from "./SessionLobby";
 import RequireLobby from "./RequireLobby";
+import HostSetup from "./HostSetup";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<StartScreen />} />
           <Route path="/lobby" element={<SessionLobby />} />
+          <Route path="/host-setup" element={<HostSetup />} />
 
           <Route
             path="/host"

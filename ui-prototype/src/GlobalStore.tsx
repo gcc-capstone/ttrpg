@@ -196,6 +196,16 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
     };
   }, []);
 
+  const [scenario, setScenario] = useState({
+    threat: "",
+    goal: "",
+    objectItem: "",
+    consequence: "",
+    notes: "",
+    playerCount: 4,
+  });
+
+
   // CREATE HOST (with join code)
   const createHost = (name: string): HostSession => {
     const code = generateJoinCode();
@@ -376,6 +386,9 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
         selectedHost,
         hostClients,
         queue,
+
+        scenario,
+        setScenario,
 
         createHost,
         joinHost,

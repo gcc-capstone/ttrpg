@@ -20,7 +20,7 @@ export default function SessionLobby() {
     if (!hostName.trim()) return;
 
     const newHost = createHost(hostName);
-    navigate("/host");
+    navigate("/host-setup");
   };
 
   // Join a host using a join code

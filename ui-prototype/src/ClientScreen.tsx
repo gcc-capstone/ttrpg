@@ -26,6 +26,7 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
   const [pendingRollAction, setPendingRollAction] = useState<string | null>(null);
   const [lastRoll, setLastRoll] = useState<number | null>(null);
   const [showHelpOptions, setShowHelpOptions] = useState(false);
+  const [showAptitudeHelp, setShowAptitudeHelp] = useState(false);
 
   const [character, setCharacter] = useState({
     name: "",
@@ -248,7 +249,18 @@ const handleUndoHelp = () => {
 
         <div style={styles.label}>
           <div className="number-heading">
-            <label htmlFor="character-number">Character Number (2–5)</label>
+            <div className="aptitude-title">
+              <label htmlFor="character-number">Aptitude Number</label>
+              <button
+                type="button"
+                className="aptitude-help-button"
+                aria-label="What is the Aptitude Number?"
+                aria-haspopup="dialog"
+                onClick={() => setShowAptitudeHelp(true)}
+              >
+                ?
+              </button>
+            </div>
             <output htmlFor="character-number">{character.number}</output>
           </div>
 
@@ -290,6 +302,44 @@ const handleUndoHelp = () => {
             <span className="slider-side">Lasers</span>
           </div>
         </div>
+
+        {showAptitudeHelp && (
+          <div
+            className="aptitude-modal-overlay"
+            onClick={() => setShowAptitudeHelp(false)}
+          >
+            <div
+              className="aptitude-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="aptitude-modal-title"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setShowAptitudeHelp(false);
+              }}
+            >
+              <h2 id="aptitude-modal-title">Aptitude Number</h2>
+              <p>
+                Your Aptitude Number (2–5) determines your character's
+                proficiency with two kinds of actions:
+              </p>
+              <p><strong>Feelings</strong> — intuition, diplomacy, and seduction.</p>
+              <p><strong>Lasers</strong> — technology, science, and cold rationality.</p>
+              <p>
+                Lower numbers favor Feelings-based actions; higher numbers
+                favor Lasers-based actions.
+              </p>
+              <button
+                type="button"
+                className="aptitude-modal-close"
+                onClick={() => setShowAptitudeHelp(false)}
+                autoFocus
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        )}
 
         <label style={styles.label}>
           Character Name

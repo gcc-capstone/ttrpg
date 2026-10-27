@@ -384,7 +384,7 @@ const handleUndoHelp = () => {
           <div><strong>Name:</strong> {character.name}</div>
           <div><strong>Style:</strong> {character.style}</div>
           <div><strong>Role:</strong> {character.class}</div>
-          <div><strong>Number:</strong> {character.number}</div>
+          <div><strong>Aptitude Number:</strong> {character.number}</div>
           <div><strong>Background:</strong> {character.background || "None"}</div>
         </div>
 

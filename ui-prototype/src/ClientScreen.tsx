@@ -563,6 +563,7 @@ const styles = {
   },
   input: {
     width: "100%",
+    boxSizing: "border-box" as const,
     padding: "10px",
     marginTop: "6px",
     borderRadius: "6px",
@@ -573,6 +574,7 @@ const styles = {
   },
   textarea: {
     width: "100%",
+    boxSizing: "border-box" as const,
     padding: "10px",
     marginTop: "6px",
     borderRadius: "6px",
@@ -584,6 +586,7 @@ const styles = {
   },
   select: {
     width: "100%",
+    boxSizing: "border-box" as const,
     padding: "10px",
     marginTop: "6px",
     borderRadius: "6px",

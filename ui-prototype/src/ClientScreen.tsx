@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
+import "./ClientScreen.css";
 
 export default function ClientScreen({ clientId }: { clientId?: number }) {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
   const [pendingRollAction, setPendingRollAction] = useState<string | null>(null);
   const [lastRoll, setLastRoll] = useState<number | null>(null);
   const [showHelpOptions, setShowHelpOptions] = useState(false);
+  const [showAptitudeHelp, setShowAptitudeHelp] = useState(false);
 
   const [character, setCharacter] = useState({
     name: "",
@@ -245,19 +247,99 @@ const handleUndoHelp = () => {
           </select>
         </label>
 
-        <label style={styles.label}>
-          Number (2–5)
-          <input
-            type="number"
-            min={2}
-            max={5}
-            style={styles.input}
-            value={character.number}
-            onChange={(e) =>
-              setCharacter((prev) => ({ ...prev, number: Number(e.target.value) }))
-            }
-          />
-        </label>
+        <div style={styles.label}>
+          <div className="number-heading">
+            <div className="aptitude-title">
+              <label htmlFor="character-number">Aptitude Number</label>
+              <button
+                type="button"
+                className="aptitude-help-button"
+                aria-label="What is the Aptitude Number?"
+                aria-haspopup="dialog"
+                onClick={() => setShowAptitudeHelp(true)}
+              >
+                ?
+              </button>
+            </div>
+            <output htmlFor="character-number">{character.number}</output>
+          </div>
+
+          <div className="slider-row">
+            <span className="slider-side">Feelings</span>
+            <div className="slider-area">
+              <div className="number-slider-wrapper">
+                <div className="number-slider-track" aria-hidden="true">
+                  {[2, 3, 4, 5].map((number) => (
+                    <span
+                      key={number}
+                      className="number-tick"
+                      style={{ left: `${((number - 2) / 3) * 100}%` }}
+                    />
+                  ))}
+                </div>
+                <input
+                  id="character-number"
+                  className="number-slider"
+                  type="range"
+                  min={2}
+                  max={5}
+                  step={1}
+                  value={character.number}
+                  onChange={(e) =>
+                    setCharacter((prev) => ({
+                      ...prev,
+                      number: Number(e.target.value),
+                    }))
+                  }
+                />
+              </div>
+              <div className="number-labels" aria-hidden="true">
+                {[2, 3, 4, 5].map((number) => (
+                  <span key={number}>{number}</span>
+                ))}
+              </div>
+            </div>
+            <span className="slider-side">Lasers</span>
+          </div>
+        </div>
+
+        {showAptitudeHelp && (
+          <div
+            className="aptitude-modal-overlay"
+            onClick={() => setShowAptitudeHelp(false)}
+          >
+            <div
+              className="aptitude-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="aptitude-modal-title"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setShowAptitudeHelp(false);
+              }}
+            >
+              <h2 id="aptitude-modal-title">Aptitude Number</h2>
+              <p>
+                Your Aptitude Number (2–5) determines your character's
+                proficiency with two kinds of actions:
+              </p>
+              <p><strong>Feelings</strong> — intuition, diplomacy, and seduction.</p>
+              <p><strong>Lasers</strong> — technology, science, and cold rationality.</p>
+              <p>
+                Lower numbers favor Feelings-based actions; higher numbers
+                favor Lasers-based actions.
+              </p>
+              <button
+                type="button"
+                className="aptitude-modal-close"
+                onClick={() => setShowAptitudeHelp(false)}
+                autoFocus
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        )}
 
         <label style={styles.label}>
           Character Name
@@ -302,7 +384,7 @@ const handleUndoHelp = () => {
           <div><strong>Name:</strong> {character.name}</div>
           <div><strong>Style:</strong> {character.style}</div>
           <div><strong>Role:</strong> {character.class}</div>
-          <div><strong>Number:</strong> {character.number}</div>
+          <div><strong>Aptitude Number:</strong> {character.number}</div>
           <div><strong>Background:</strong> {character.background || "None"}</div>
         </div>
 
@@ -531,6 +613,7 @@ const styles = {
   },
   input: {
     width: "100%",
+    boxSizing: "border-box" as const,
     padding: "10px",
     marginTop: "6px",
     borderRadius: "6px",
@@ -541,6 +624,7 @@ const styles = {
   },
   textarea: {
     width: "100%",
+    boxSizing: "border-box" as const,
     padding: "10px",
     marginTop: "6px",
     borderRadius: "6px",
@@ -552,6 +636,7 @@ const styles = {
   },
   select: {
     width: "100%",
+    boxSizing: "border-box" as const,
     padding: "10px",
     marginTop: "6px",
     borderRadius: "6px",

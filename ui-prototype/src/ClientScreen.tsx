@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
+import "./ClientScreen.css";
 
 export default function ClientScreen({ clientId }: { clientId?: number }) {
   const navigate = useNavigate();
@@ -245,19 +246,50 @@ const handleUndoHelp = () => {
           </select>
         </label>
 
-        <label style={styles.label}>
-          Number (2–5)
-          <input
-            type="number"
-            min={2}
-            max={5}
-            style={styles.input}
-            value={character.number}
-            onChange={(e) =>
-              setCharacter((prev) => ({ ...prev, number: Number(e.target.value) }))
-            }
-          />
-        </label>
+        <div style={styles.label}>
+          <div className="number-heading">
+            <label htmlFor="character-number">Character Number (2–5)</label>
+            <output htmlFor="character-number">{character.number}</output>
+          </div>
+
+          <div className="slider-row">
+            <span className="slider-side">Feelings</span>
+            <div className="slider-area">
+              <div className="number-slider-wrapper">
+                <div className="number-slider-track" aria-hidden="true">
+                  {[2, 3, 4, 5].map((number) => (
+                    <span
+                      key={number}
+                      className="number-tick"
+                      style={{ left: `${((number - 2) / 3) * 100}%` }}
+                    />
+                  ))}
+                </div>
+                <input
+                  id="character-number"
+                  className="number-slider"
+                  type="range"
+                  min={2}
+                  max={5}
+                  step={1}
+                  value={character.number}
+                  onChange={(e) =>
+                    setCharacter((prev) => ({
+                      ...prev,
+                      number: Number(e.target.value),
+                    }))
+                  }
+                />
+              </div>
+              <div className="number-labels" aria-hidden="true">
+                {[2, 3, 4, 5].map((number) => (
+                  <span key={number}>{number}</span>
+                ))}
+              </div>
+            </div>
+            <span className="slider-side">Lasers</span>
+          </div>
+        </div>
 
         <label style={styles.label}>
           Character Name

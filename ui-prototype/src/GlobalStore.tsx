@@ -28,6 +28,18 @@ export type QueueMember = {
   helperCharacterName?: string;
 };
 
+export type Scenario = {
+  threat: string;
+  goal: string;
+  objectItem: string;
+  consequence: string;
+  notes: string;
+  playerCount: number;
+  maturity: string;
+  difficulty: string;
+  gameLength: string;
+};
+
 type Store = {
   characters: Character[];
   messages: Message[];
@@ -35,6 +47,9 @@ type Store = {
   selectedHost: string | null;
   hostClients: Record<string, { client1: boolean; client2: boolean }>;
   queue: QueueMember[];
+
+  scenario: Scenario;
+  setScenario: (s: Scenario) => void;
 
   createHost: (name: string) => HostSession;
   joinHost: (hostId: string) => void;
@@ -196,13 +211,16 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
     };
   }, []);
 
-  const [scenario, setScenario] = useState({
+  const [scenario, setScenario] = useState<Scenario>({
     threat: "",
     goal: "",
     objectItem: "",
     consequence: "",
     notes: "",
     playerCount: 4,
+    maturity: "Teen",
+    difficulty: "Normal",
+    gameLength: "Short Campaign",
   });
 
 
@@ -211,7 +229,8 @@ export function GlobalStoreProvider({ children }: { children: React.ReactNode })
     const code = generateJoinCode();
 
     const newHost: HostSession = {
-      id: crypto.randomUUID(),
+      // crypto.randomUUID only exists on localhost/https, not on a LAN address
+      id: `${Date.now()}-${Math.random().toString(36).substring(2, 10)}`,
       name,
       code,
       createdAt: Date.now(),

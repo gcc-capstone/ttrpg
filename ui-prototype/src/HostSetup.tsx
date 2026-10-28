@@ -47,7 +47,7 @@ const CONSEQUENCES = [
 export default function HostSetup() {
   const navigate = useNavigate();
 
-  const { selectedHost, setScenario } = useGlobalStore();
+  const { selectedHost, scenario, setScenario } = useGlobalStore();
 
   const [threat, setThreat] = useState("");
   const [goal, setGoal] = useState("");
@@ -177,6 +177,7 @@ export default function HostSetup() {
             style={styles.confirmButton}
             onClick={() => {
                 setScenario({
+                ...scenario,
                 threat,
                 goal,
                 objectItem,

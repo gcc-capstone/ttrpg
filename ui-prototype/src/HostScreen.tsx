@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
+import { scenarioSentence } from "./ScenarioOption";
 
 
 
@@ -15,6 +16,7 @@ export default function HostScreen() {
     hosts,
     hullIntegrity,
     scenario,
+    setScenario,
   } = useGlobalStore();
 
   const [mode, setMode] = useState<"create" | "edit" | "play">("create");
@@ -35,6 +37,42 @@ export default function HostScreen() {
     </div>;
   }
 
+  // Dropdown card styled like the ones on the Scenario Setup screen
+  const settingCard = (
+    label: string,
+    value: string | number,
+    options: (string | number)[],
+    onChange: (value: string) => void
+  ) => (
+    <div style={styles.settingCard}>
+      <label style={styles.settingLabel}>{label}</label>
+      <select
+        style={styles.settingSelect}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>{option}</option>
+        ))}
+      </select>
+    </div>
+  );
+
+  // Maturity, difficulty and game length — shared by the create and settings screens
+  const settingDropdowns = (
+    <>
+      {settingCard("MATURITY", scenario.maturity, MATURITY_OPTIONS, (v) =>
+        setScenario({ ...scenario, maturity: v })
+      )}
+      {settingCard("DIFFICULTY", scenario.difficulty, DIFFICULTY_OPTIONS, (v) =>
+        setScenario({ ...scenario, difficulty: v })
+      )}
+      {settingCard("GAME LENGTH", scenario.gameLength, GAME_LENGTH_OPTIONS, (v) =>
+        setScenario({ ...scenario, gameLength: v })
+      )}
+    </>
+  );
+
   if (mode === "create") {
     return (
       <div style={styles.createPage}>
@@ -44,12 +82,17 @@ export default function HostScreen() {
           Tone
           <input
             style={styles.input}
+            placeholder="Ex. Lighthearted"
             value={tone}
             onChange={(e) =>
               setTone(e.target.value)
             }
           />
         </label>
+
+        <div style={styles.settingGrid}>
+          {settingDropdowns}
+        </div>
 
         <button style={styles.createButton} onClick={() => setMode("play")}>
           Start Campaign
@@ -61,12 +104,13 @@ export default function HostScreen() {
   if (mode === "edit") {
     return (
       <div style={styles.createPage}>
-        <h1 style={styles.createHeading}>Edit Your Campaign</h1>
+        <h1 style={styles.createHeading}>Campaign Settings</h1>
 
         <label style={styles.label}>
           Tone
           <input
             style={styles.input}
+            placeholder="Ex. Lighthearted"
             value={tone}
             onChange={(e) =>
               setTone(e.target.value)
@@ -74,8 +118,15 @@ export default function HostScreen() {
           />
         </label>
 
+        <div style={styles.settingGrid}>
+          {settingDropdowns}
+          {settingCard("NUMBER OF PLAYERS", scenario.playerCount, [1, 2, 3, 4, 5, 6], (v) =>
+            setScenario({ ...scenario, playerCount: Number(v) })
+          )}
+        </div>
+
         <button style={styles.createButton} onClick={() => setMode("play")}>
-          Start Campaign
+          Save & Return
         </button>
       </div>
     );
@@ -85,24 +136,17 @@ export default function HostScreen() {
     <div style={styles.page}>
       {/* LEFT SIDE — angled portraits */}
       <div style={styles.leftColumn}>
-        {characters.map((c, i) => (
-          <div key={i} style={styles.portraitCard}>
-            {c.name}
-          </div>
-        ))}
+        <button style={styles.navButton} onClick={() => setMode("edit")}>
+          Campaign Settings
+        </button>
         <div style={styles.scenarioBox}>
         <h2>Scenario Overview</h2>
 
-        <p><strong>Threat:</strong> {scenario.threat}</p>
-        <p><strong>Goal:</strong> {scenario.goal}</p>
-        <p><strong>Object:</strong> {scenario.objectItem}</p>
-        <p><strong>Consequence:</strong> {scenario.consequence}</p>
+        <p>{scenarioSentence(scenario)}</p>
 
         {scenario.notes && (
           <p><strong>Notes:</strong> {scenario.notes}</p>
         )}
-
-        <p><strong>Players:</strong> {scenario.playerCount}</p>
       </div>
       
       </div>
@@ -153,20 +197,6 @@ export default function HostScreen() {
   </div>
 
   <div style={styles.centerBox}>
-    <h2 style={styles.centerHeading}>AI Response</h2>
-    <p style={styles.centerText}>
-      The AI GM describes the next scene or reacts to player actions.
-    </p>
-  </div>
-
-  <div style={styles.centerBox}>
-    <h2 style={styles.centerHeading}>Player Action</h2>
-    <p style={styles.centerText}>
-      Player actions appear here as they are submitted.
-    </p>
-  </div>
-
-  <div style={styles.centerBox}>
     <h2 style={styles.centerHeading}>Live Chat Log</h2>
 
     <div style={styles.chatLog}>
@@ -188,24 +218,10 @@ export default function HostScreen() {
 
       {/* RIGHT SIDE — Persona-style party status */}
       <div style = { styles.rightColumn }>
-        <button style={styles.navButton} onClick={() => setMode("edit")}>
-          Edit Campaign
-        </button>
-      </div>
-
-      <div style={styles.rightColumn}>
-        {characters.length === 0 && (
-          <div style={styles.noPlayers}>No characters created yet.</div>
-        )}
-
         {characters.map((c, i) => (
-          <div key={i} style={styles.statusCard}>
-            <div style={styles.statusPortrait}>P</div>
-
-            <div style={styles.statusInfo}>
-              <div style={styles.statusName}>{c.name}</div>
-              <div style={styles.statusSub}>{c.style} {c.class}</div>
-            </div>
+          <div key={i} style={styles.portraitCard}>
+            {c.name}
+            <div style={styles.portraitSub}>{c.style} {c.class}</div>
           </div>
         ))}
       </div>
@@ -271,6 +287,10 @@ export default function HostScreen() {
 
 const MAX_HULL_INTEGRITY = 6;
 
+const MATURITY_OPTIONS = ["Family-Friendly", "Teen", "Mature"];
+const DIFFICULTY_OPTIONS = ["Easy", "Normal", "Hard", "Deadly"];
+const GAME_LENGTH_OPTIONS = ["One-Shot", "Short Campaign", "Long Campaign", "Endless"];
+
 function getHullColor(health: number) {
   // 0 health = red, 6+ health = green.
   // Hue moves through yellow as the hull recovers.
@@ -282,9 +302,37 @@ function getHullColor(health: number) {
 const styles: Record<string, React.CSSProperties> = {
   createPage: {
     padding: "24px",
-    backgroundColor: "#111",
+    backgroundColor: "#000",
     color: "#FFF",
-    height: "100vh",
+    minHeight: "100vh",
+    boxSizing: "border-box",
+  },
+  settingGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "20px",
+    marginBottom: "16px",
+  },
+  settingCard: {
+    background: "#111",
+    border: "2px solid #4CC9A3",
+    borderRadius: "10px",
+    padding: "20px",
+  },
+  settingLabel: {
+    display: "block",
+    fontSize: "18px",
+    fontWeight: 700,
+    color: "#4CC9A3",
+    marginBottom: "10px",
+  },
+  settingSelect: {
+    width: "100%",
+    padding: "10px",
+    background: "#000",
+    color: "#fff",
+    border: "2px solid #4CC9A3",
+    borderRadius: "6px",
   },
   createHeading: {
     fontSize: "28px",
@@ -326,6 +374,7 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     fontSize: "13px",
     fontWeight: 600,
+    alignSelf: "flex-start",
   },
   page: {
     display: "grid",
@@ -349,6 +398,7 @@ const styles: Record<string, React.CSSProperties> = {
     height: "130px",
     borderRadius: "12px",
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     transform: "skew(-10deg)",
@@ -356,6 +406,12 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     border: "3px solid #4CC9A3",
     boxShadow: "0 0 12px rgba(76, 201, 255, 0.4)",
+  },
+  portraitSub: {
+    fontSize: "14px",
+    fontWeight: 400,
+    color: "#CCCCCC",
+    marginTop: "6px",
   },
 
   centerColumn: {
@@ -391,7 +447,7 @@ const styles: Record<string, React.CSSProperties> = {
 },
 
   chatLog: {
-    maxHeight: "200px",
+    height: "45vh",
     overflowY: "auto",
     backgroundColor: "#0F0F0F",
     padding: "10px",
@@ -414,46 +470,6 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "20px",
     padding: "20px",
   },
-  noPlayers: {
-    fontSize: "18px",
-    fontStyle: "italic",
-    color: "#888",
-  },
-  statusCard: {
-    display: "flex",
-    backgroundColor: "#1A1A1A",
-    borderRadius: "12px",
-    padding: "14px",
-    border: "3px solid #4CC9A3",
-    gap: "14px",
-    boxShadow: "0 0 12px rgba(76, 201, 255, 0.4)",
-  },
-  statusPortrait: {
-    width: "60px",
-    height: "60px",
-    backgroundColor: "#4CC9A3",
-    borderRadius: "8px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#000",
-    fontWeight: 700,
-    fontSize: "20px",
-  },
-  statusInfo: {
-    flex: 1,
-  },
-  statusName: {
-    fontWeight: 700,
-    marginBottom: "4px",
-    fontSize: "18px",
-    color: "#FFFFFF",
-  },
-  statusSub: {
-    fontSize: "14px",
-    marginBottom: "10px",
-    color: "#CCCCCC",
-  },
 
   hullRow: {
     gridColumn: "1 / span 3",
@@ -463,7 +479,6 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     padding: "8px 20px 12px",
     backgroundColor: "#000000",
-    borderTop: "1px solid #2B2B2B",
     gap: "6px",
   },
   hullLabel: {

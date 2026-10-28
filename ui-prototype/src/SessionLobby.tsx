@@ -12,12 +12,17 @@ export default function SessionLobby() {
 
   const [hostName, setHostName] = useState("");
   const [joinCode, setJoinCode] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [codeError, setCodeError] = useState("");
 
   const navigate = useNavigate();
 
   // Create a host and navigate to HostScreen
   const handleCreateHost = () => {
-    if (!hostName.trim()) return;
+    if (!hostName.trim()) {
+      setNameError("Please enter a name for the lobby.");
+      return;
+    }
 
     const newHost = createHost(hostName);
     navigate("/host-setup");
@@ -25,7 +30,10 @@ export default function SessionLobby() {
 
   // Join a host using a join code
   const handleJoinByCode = () => {
-    if (!joinCode.trim()) return;
+    if (!joinCode.trim()) {
+      setCodeError("Please enter a join code.");
+      return;
+    }
 
     const host = joinHostByCode(joinCode);
     if (!host) {
@@ -48,41 +56,51 @@ export default function SessionLobby() {
 
   return (
     <div style={styles.page}>
-      <h1 style={styles.title}>Session Lobby</h1>
-
-      {/* CREATE HOST */}
-      <div style={styles.section}>
-        <h2>Create a Host Session</h2>
-
-        <input
-          style={styles.input}
-          placeholder="Host Name"
-          value={hostName}
-          onChange={(e) => setHostName(e.target.value)}
-        />
-
-        <button style={styles.button} onClick={handleCreateHost}>
-          Create Host
-        </button>
-      </div>
+      <h1 style={styles.title}>Lobbies</h1>
 
       {/* JOIN BY CODE */}
       <div style={styles.section}>
-        <h2>Join a Host Session</h2>
+        <h2>Join a Lobby</h2>
 
         <input
           style={styles.input}
           placeholder="Enter Join Code"
           value={joinCode}
-          onChange={(e) => setJoinCode(e.target.value)}
+          onChange={(e) => {
+            setJoinCode(e.target.value);
+            setCodeError("");
+          }}
         />
+
+        {codeError && <div style={styles.error}>{codeError}</div>}
 
         <button style={styles.button} onClick={handleJoinByCode}>
           Join
         </button>
       </div>
+
+      {/* CREATE HOST */}
+      <div style={styles.section}>
+        <h2>Create a Lobby</h2>
+
+        <input
+          style={styles.input}
+          placeholder="Enter a Lobby Name"
+          value={hostName}
+          onChange={(e) => {
+            setHostName(e.target.value);
+            setNameError("");
+          }}
+        />
+
+        {nameError && <div style={styles.error}>{nameError}</div>}
+
+        <button style={styles.button} onClick={handleCreateHost}>
+          Create
+        </button>
+      </div>
       <button
-        style={styles.button}
+        style={{ ...styles.button, marginTop: "40px" }}
         onClick={() => navigate("/")}
       >
         ← Back
@@ -122,6 +140,11 @@ const styles = {
     color: "#FFF",
     border: "2px solid #4CC9A3",
     borderRadius: "6px",
+  },
+  error: {
+    color: "#B4473A",
+    fontSize: "14px",
+    marginBottom: "6px",
   },
   button: {
     padding: "10px 20px",

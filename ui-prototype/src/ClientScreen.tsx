@@ -457,7 +457,7 @@ const handleUndoHelp = () => {
         disabled={!canHelpUser}
         onClick={() => setShowHelpOptions(!showHelpOptions)}
       >
-        Help
+        Help Another Player
       </button>
     )}
   </>

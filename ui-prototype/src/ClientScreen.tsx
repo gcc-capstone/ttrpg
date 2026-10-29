@@ -8,23 +8,18 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
   const {
   addCharacter,
   addMessage,
-  messages,
   queue,
   enterQueue,
   endTurn,
   helpUser,
   undoHelp,
   leaveQueue,
-  updateHullIntegrity,
   hullIntegrity,
 } = useGlobalStore();
   const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
   const won = hullIntegrity >= 12;
 
   const [mode, setMode] = useState<"create" | "preview" | "roll" | "chat">("create");
-  const [waitingForRoll, setWaitingForRoll] = useState(false);
-  const [pendingRollAction, setPendingRollAction] = useState<string | null>(null);
-  const [lastRoll, setLastRoll] = useState<number | null>(null);
   const [showHelpOptions, setShowHelpOptions] = useState(false);
   const [showAptitudeHelp, setShowAptitudeHelp] = useState(false);
 
@@ -169,17 +164,6 @@ const handleUndoHelp = () => {
     setMode("roll");
   };
 
-  const sendAction = (action: string, rollRequired: boolean) => {
-    if (!isMyTurn) { return; }
-    addMessage({ from: `client${clientId ?? ""}`, text: `Action: ${action}` });
-
-    if (action === "Defend") { updateHullIntegrity(1); }
-    if (action === "Attack") { updateHullIntegrity(-1); }
-
-    if (rollRequired) { setMode("roll"); }
-    else { sendGMResponse(); }
-  };
-
   const sendGMResponse = () => {
     addMessage({ from: "gm", text: "Your action ripples through the scene." });
     endTurn(clientId!);
@@ -195,7 +179,7 @@ const handleUndoHelp = () => {
   if (mode === "create") {
     return (
       <div style={styles.createPage}>
-        <h1 style={styles.createHeading}>Create Your Character</h1>
+        <h1 style={styles.heading}>Create Your Character</h1>
 
         <div style={styles.suggestionBox}>
           <div style={styles.suggestionTitle}>GM Suggestions</div>
@@ -404,7 +388,7 @@ const handleUndoHelp = () => {
     return (
       <div style={styles.page}>
         <div style={styles.actionRow}>
-          <button style={styles.actionButton} onClick={() => generateDice(3)}>Roll!</button>
+          <button style={styles.rollButton} onClick={() => generateDice(3)}>Roll!</button>
         </div>
       </div>
     );
@@ -415,6 +399,7 @@ const handleUndoHelp = () => {
     <div style={styles.page}>
       <div style={styles.topBar}>
         <div style={styles.topIcon}>X</div>
+        <p style = {styles.heading}>PLAYER TERMINAL</p>
         <div style={styles.topIcon} onClick={() => setShowStats(!showStats)}>≡</div>
       </div>
 
@@ -502,52 +487,19 @@ const handleUndoHelp = () => {
 )}
 
 <div style={styles.actionRow}>
-  <button
-    style={styles.actionButton}
-    disabled={!isMyTurn}
-    onClick={() => sendAction("Attack", false)}
-  >
-    Attack
-  </button>
+  <div style={styles.inputContainer}>
+    <input
+      style = { isMyTurn ? styles.inputBoxActive : styles.inputBoxDisabled }
+      placeholder = { isMyTurn ? "Describe your action..." : (isInQueue ? "Wait for your turn..." : "Enter the queue to act...") }
+      value={text}
+      disabled = {!isMyTurn}
+      onChange={(e) => setText(e.target.value)}
+    />
 
-  <button
-    style={styles.actionButton}
-    disabled={!isMyTurn}
-    onClick={() => sendAction("Defend", false)}
-  >
-    Defend
-  </button>
-
-  <button
-    style={styles.actionButton}
-    disabled={!isMyTurn}
-    onClick={() => sendAction("Investigate", true)}
-  >
-    Investigate
-  </button>
-
-  <button
-    style={styles.actionButton}
-    disabled={!isMyTurn}
-    onClick={() => sendAction("Negotiate", true)}
-  >
-    Negotiate
-  </button>
-
-      <div style={styles.inputContainer}>
-        <input
-          style={styles.inputBox}
-          placeholder="User Text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-
-        <button style={styles.sendButton} onClick={sendMessage}>
-          <span style={styles.sendIcon}>➤</span>
-        </button>
-      </div>
-
-      <div style={styles.keyboardArea}>Keyboard</div>
+    <button style={isMyTurn ? styles.sendButtonActive : styles.sendButtonDisabled} onClick={sendMessage}>
+      <span style={styles.sendIcon}>➤</span>
+    </button>
+  </div>
 </div>
 
       {gameOver && (
@@ -585,7 +537,7 @@ const styles = {
     color: "#FFF",
     height: "100vh",
   },
-  createHeading: {
+  heading: {
     fontSize: "28px",
     marginBottom: "20px",
     color: "#4CC9A3",
@@ -725,16 +677,6 @@ const styles = {
     justifyContent: "space-around",
     padding: "12px",
     backgroundColor: "#000",
-    borderTop: "2px solid #4CC9A3",
-  },
-  actionButton: {
-    backgroundColor: "#4CC9A3",
-    color: "#000",
-    padding: "10px 14px",
-    borderRadius: "6px",
-    border: "none",
-    cursor: "pointer",
-    fontWeight: 700,
   },
   inputContainer: {
     display: "flex",
@@ -742,7 +684,7 @@ const styles = {
     backgroundColor: "#000",
     borderTop: "2px solid #4CC9A3",
   },
-  inputBox: {
+  inputBoxActive: {
     flex: 1,
     padding: "14px",
     borderRadius: "8px",
@@ -752,11 +694,32 @@ const styles = {
     fontSize: "18px",
     marginRight: "12px",
   },
-  sendButton: {
+  inputBoxDisabled: {
+    flex: 1,
+    padding: "14px",
+    borderRadius: "8px",
+    border: "2px solid #252525",
+    backgroundColor: "#000",
+    color: "#FFF",
+    fontSize: "18px",
+    marginRight: "12px",
+  },
+  sendButtonActive: {
     width: "56px",
     height: "56px",
     borderRadius: "50%",
     backgroundColor: "#4CC9A3",
+    border: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+  },
+  sendButtonDisabled: {
+    width: "56px",
+    height: "56px",
+    borderRadius: "50%",
+    backgroundColor: "#252525",
     border: "none",
     display: "flex",
     alignItems: "center",
@@ -815,7 +778,7 @@ const styles = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  marginBottom: "16px",
+  margin: "16px",
 },
 
 queueButton: {
@@ -840,38 +803,17 @@ turnText: {
   fontSize: "18px",
   fontWeight: 700,
 },
-
-rollArea: {
-  textAlign: "center",
-  marginTop: "16px",
-  padding: "16px",
-  backgroundColor: "#E8E2D6",
-  borderRadius: "8px",
-},
-
-rollText: {
-  color: "#2B2B2B",
-  marginBottom: "12px",
-},
-
 rollButton: {
-  backgroundColor: "#B4473A",
-  color: "#FFFFFF",
+  backgroundColor: "#4CC9A3",
+  color: "#000000",
   padding: "12px 24px",
   borderRadius: "6px",
   border: "none",
   cursor: "pointer",
   fontSize: "16px",
   fontWeight: 600,
+  marginLeft: "12px",
 },
-
-rollResult: {
-  textAlign: "center",
-  color: "#2B2B2B",
-  marginTop: "12px",
-  fontSize: "18px",
-},
-
 helpButton: {
   backgroundColor: "#4CC9A3",
   color: "#000000",

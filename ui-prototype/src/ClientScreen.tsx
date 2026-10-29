@@ -21,7 +21,7 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
 
   const [mode, setMode] = useState<"create" | "preview" | "roll" | "chat">("create");
   const [showHelpOptions, setShowHelpOptions] = useState(false);
-  const [showAptitudeHelp, setShowAptitudeHelp] = useState(false);
+  const [helpTopic, setHelpTopic] = useState<"aptitude" | "style" | "role" | null>(null);
 
   const [character, setCharacter] = useState({
     name: "",
@@ -33,6 +33,7 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
 
   const [text, setText] = useState("");
   const [showStats, setShowStats] = useState(false);
+  const [triedPreview, setTriedPreview] = useState(false);
 
   const randomNames = [
     "Sparks McGee",
@@ -41,7 +42,17 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
     "Seren Ashfall",
     "Vexa Ionblade",
     "Rook Starborn",
-    "Juno Drift"
+    "Juno Drift",
+    "Orion Vale",
+    "Talia Quasar",
+    "Dex Morrow",
+    "Lyra Coldspark",
+    "Zane Halcyon",
+    "Mira Voidwalker",
+    "Cass Ember",
+    "Thorne Galeway",
+    "Pixel Okonkwo",
+    "Rigel Marsh"
   ];
 
   const isInQueue =
@@ -140,8 +151,17 @@ const handleUndoHelp = () => {
   const gmSuggestedStyles = ["Heroic", "Savvy", "Dangerous"];
   const gmSuggestedRoles = ["Explorer", "Scientist", "Pilot"];
 
+  const missingFields = [
+    !character.style && "Style",
+    !character.class && "Role",
+    !character.name && "Character Name",
+  ].filter(Boolean);
+
   const goToPreview = () => {
-    if (!character.name || !character.style || !character.class) return;
+    if (missingFields.length > 0) {
+      setTriedPreview(true);
+      return;
+    }
     setMode("preview");
   };
 
@@ -191,9 +211,21 @@ const handleUndoHelp = () => {
           </div>
         </div>
 
-        <label style={styles.label}>
-          Style
+        <div style={styles.label}>
+          <div className="aptitude-title">
+            <label htmlFor="character-style">Style</label>
+            <button
+              type="button"
+              className="aptitude-help-button"
+              aria-label="What do the styles mean?"
+              aria-haspopup="dialog"
+              onClick={() => setHelpTopic("style")}
+            >
+              ?
+            </button>
+          </div>
           <select
+            id="character-style"
             style={styles.select}
             value={character.style}
             onChange={(e) =>
@@ -209,11 +241,23 @@ const handleUndoHelp = () => {
             <option value="Intrepid">Intrepid</option>
             <option value="Savvy">Savvy</option>
           </select>
-        </label>
+        </div>
 
-        <label style={styles.label}>
-          Role
+        <div style={styles.label}>
+          <div className="aptitude-title">
+            <label htmlFor="character-role">Role</label>
+            <button
+              type="button"
+              className="aptitude-help-button"
+              aria-label="What do the roles mean?"
+              aria-haspopup="dialog"
+              onClick={() => setHelpTopic("role")}
+            >
+              ?
+            </button>
+          </div>
           <select
+            id="character-role"
             style={styles.select}
             value={character.class}
             onChange={(e) =>
@@ -229,7 +273,7 @@ const handleUndoHelp = () => {
             <option value="Scientist">Scientist</option>
             <option value="Soldier">Soldier</option>
           </select>
-        </label>
+        </div>
 
         <div style={styles.label}>
           <div className="number-heading">
@@ -240,7 +284,7 @@ const handleUndoHelp = () => {
                 className="aptitude-help-button"
                 aria-label="What is the Aptitude Number?"
                 aria-haspopup="dialog"
-                onClick={() => setShowAptitudeHelp(true)}
+                onClick={() => setHelpTopic("aptitude")}
               >
                 ?
               </button>
@@ -287,10 +331,10 @@ const handleUndoHelp = () => {
           </div>
         </div>
 
-        {showAptitudeHelp && (
+        {helpTopic && (
           <div
             className="aptitude-modal-overlay"
-            onClick={() => setShowAptitudeHelp(false)}
+            onClick={() => setHelpTopic(null)}
           >
             <div
               className="aptitude-modal"
@@ -299,24 +343,46 @@ const handleUndoHelp = () => {
               aria-labelledby="aptitude-modal-title"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => {
-                if (e.key === "Escape") setShowAptitudeHelp(false);
+                if (e.key === "Escape") setHelpTopic(null);
               }}
             >
-              <h2 id="aptitude-modal-title">Aptitude Number</h2>
-              <p>
-                Your Aptitude Number (2–5) determines your character's
-                proficiency with two kinds of actions:
-              </p>
-              <p><strong>Feelings</strong> — intuition, diplomacy, and seduction.</p>
-              <p><strong>Lasers</strong> — technology, science, and cold rationality.</p>
-              <p>
-                Lower numbers favor Feelings-based actions; higher numbers
-                favor Lasers-based actions.
-              </p>
+              {helpTopic === "aptitude" && (
+                <>
+                  <h2 id="aptitude-modal-title">Aptitude Number</h2>
+                  <p>
+                    Your Aptitude Number (2–5) determines your character's
+                    proficiency with two kinds of actions:
+                  </p>
+                  <p><strong>Feelings</strong> — intuition, diplomacy, and seduction.</p>
+                  <p><strong>Lasers</strong> — technology, science, and cold rationality.</p>
+                  <p>
+                    Lower numbers favor Feelings-based actions; higher numbers
+                    favor Lasers-based actions.
+                  </p>
+                </>
+              )}
+              {helpTopic === "style" && (
+                <>
+                  <h2 id="aptitude-modal-title">Style</h2>
+                  <p>Your style is your character's personality and the way they carry themselves.</p>
+                  {Object.entries(styleDescriptions).map(([name, description]) => (
+                    <p key={name}><strong>{name}</strong> — {description}</p>
+                  ))}
+                </>
+              )}
+              {helpTopic === "role" && (
+                <>
+                  <h2 id="aptitude-modal-title">Role</h2>
+                  <p>Your role is your character's job aboard the ship.</p>
+                  {Object.entries(roleDescriptions).map(([name, description]) => (
+                    <p key={name}><strong>{name}</strong> — {description}</p>
+                  ))}
+                </>
+              )}
               <button
                 type="button"
                 className="aptitude-modal-close"
-                onClick={() => setShowAptitudeHelp(false)}
+                onClick={() => setHelpTopic(null)}
                 autoFocus
               >
                 Got it
@@ -350,6 +416,12 @@ const handleUndoHelp = () => {
             }
           />
         </label>
+
+        {triedPreview && missingFields.length > 0 && (
+          <div style={styles.errorText} role="alert">
+            Please fill in: {missingFields.join(", ")}
+          </div>
+        )}
 
         <button style={styles.createButton} onClick={goToPreview}>
           Preview Character
@@ -530,7 +602,32 @@ const handleUndoHelp = () => {
   );
 }
 
+const styleDescriptions = {
+  Alien: "From another world, with strange customs and a fresh outlook on humanity.",
+  Android: "A synthetic being, logical and precise, still figuring out what it means to be alive.",
+  Dangerous: "Intimidating and unpredictable; others think twice before crossing you.",
+  Heroic: "Brave and selfless, always first to step up when someone needs saving.",
+  "Hot-Shot": "Cocky and flashy, living for risky stunts and showing off.",
+  Intrepid: "Fearless and curious, eager to charge into the unknown.",
+  Savvy: "Clever and street-smart, always working an angle.",
+};
+
+const roleDescriptions = {
+  Doctor: "Heals the crew and treats injuries, illnesses, and alien ailments.",
+  Envoy: "Speaks for the ship, handling diplomacy, negotiation, and first contact.",
+  Engineer: "Keeps the ship running, fixing and building machines and systems.",
+  Explorer: "Scouts new worlds, tracks, and leads away missions.",
+  Pilot: "Flies the ship and any other vehicle, especially under pressure.",
+  Scientist: "Studies anomalies, analyzes data, and explains the unexplained.",
+  Soldier: "Handles combat and security, protecting the crew from threats.",
+};
+
 const styles = {
+  errorText: {
+    color: "#FF4D4D",
+    fontWeight: 700,
+    marginBottom: "12px",
+  },
   createPage: {
     padding: "24px",
     backgroundColor: "#111",
@@ -680,33 +777,35 @@ const styles = {
   },
   inputContainer: {
     display: "flex",
-    padding: "12px",
+    alignItems: "center",
+    padding: "16px",
     backgroundColor: "#000",
     borderTop: "2px solid #4CC9A3",
   },
   inputBoxActive: {
     flex: 1,
-    padding: "14px",
-    borderRadius: "8px",
+    padding: "20px 18px",
+    borderRadius: "10px",
     border: "2px solid #4CC9A3",
     backgroundColor: "#000",
     color: "#FFF",
-    fontSize: "18px",
-    marginRight: "12px",
+    fontSize: "22px",
+    marginRight: "14px",
   },
   inputBoxDisabled: {
     flex: 1,
-    padding: "14px",
-    borderRadius: "8px",
+    padding: "20px 18px",
+    borderRadius: "10px",
     border: "2px solid #252525",
     backgroundColor: "#000",
     color: "#FFF",
-    fontSize: "18px",
-    marginRight: "12px",
+    fontSize: "22px",
+    marginRight: "14px",
   },
   sendButtonActive: {
-    width: "56px",
-    height: "56px",
+    width: "76px",
+    height: "76px",
+    flexShrink: 0,
     borderRadius: "50%",
     backgroundColor: "#4CC9A3",
     border: "none",
@@ -716,8 +815,9 @@ const styles = {
     cursor: "pointer",
   },
   sendButtonDisabled: {
-    width: "56px",
-    height: "56px",
+    width: "76px",
+    height: "76px",
+    flexShrink: 0,
     borderRadius: "50%",
     backgroundColor: "#252525",
     border: "none",
@@ -727,7 +827,7 @@ const styles = {
     cursor: "pointer",
   },
   sendIcon: {
-    fontSize: "24px",
+    fontSize: "34px",
     color: "#000",
     fontWeight: 700,
   },
@@ -776,31 +876,42 @@ const styles = {
   },
   queueStatus: {
   display: "flex",
+  flexWrap: "wrap" as const,
   justifyContent: "center",
-  alignItems: "center",
+  alignItems: "stretch",
+  gap: "14px",
   margin: "16px",
 },
 
 queueButton: {
-  backgroundColor: "#2F4F3A",
-  color: "#FFFFFF",
-  padding: "12px 24px",
-  borderRadius: "6px",
+  backgroundColor: "#4CC9A3",
+  color: "#000000",
+  padding: "18px 24px",
+  borderRadius: "10px",
   border: "none",
   cursor: "pointer",
-  fontSize: "16px",
-  fontWeight: 600,
+  fontSize: "20px",
+  fontWeight: 800,
+  letterSpacing: "0.5px",
+  textTransform: "uppercase" as const,
+  flex: "1 1 200px",
+  maxWidth: "320px",
+  boxShadow: "0 0 16px rgba(76, 201, 163, 0.6)",
 },
 
 waitingText: {
-  color: "#555555",
+  flexBasis: "100%",
+  textAlign: "center" as const,
+  color: "#AAAAAA",
   fontSize: "16px",
   fontWeight: 600,
 },
 
 turnText: {
-  color: "#2F4F3A",
-  fontSize: "18px",
+  flexBasis: "100%",
+  textAlign: "center" as const,
+  color: "#4CC9A3",
+  fontSize: "20px",
   fontWeight: 700,
 },
 rollButton: {
@@ -815,80 +926,109 @@ rollButton: {
   marginLeft: "12px",
 },
 helpButton: {
-  backgroundColor: "#4CC9A3",
+  backgroundColor: "#F2B33D",
   color: "#000000",
-  padding: "12px 24px",
-  borderRadius: "6px",
+  padding: "18px 24px",
+  borderRadius: "10px",
   border: "none",
   cursor: "pointer",
-  fontSize: "16px",
-  fontWeight: 600,
-  marginLeft: "12px",
+  fontSize: "20px",
+  fontWeight: 800,
+  letterSpacing: "0.5px",
+  textTransform: "uppercase" as const,
+  flex: "1 1 200px",
+  maxWidth: "320px",
+  boxShadow: "0 0 16px rgba(242, 179, 61, 0.6)",
 },
   disabledHelpButton: {
     backgroundColor: "#555",
     color: "#999",
+    boxShadow: "none",
     cursor: "not-allowed",
   },
 
   helpOptions: {
     backgroundColor: "#111",
-    border: "2px solid #4CC9A3",
-    borderRadius: "8px",
-    padding: "16px",
-    margin: "0 16px 16px 16px",
+    border: "2px solid #F2B33D",
+    borderRadius: "12px",
+    boxShadow: "0 0 16px rgba(242, 179, 61, 0.4)",
+    padding: "20px",
+    width: "calc(100% - 32px)",
+    maxWidth: "480px",
+    boxSizing: "border-box" as const,
+    margin: "0 auto 16px",
     textAlign: "center",
   },
 
   helpTitle: {
-    color: "#4CC9A3",
-    fontSize: "18px",
-    fontWeight: 700,
-    marginBottom: "12px",
+    color: "#F2B33D",
+    fontSize: "20px",
+    fontWeight: 800,
+    letterSpacing: "0.5px",
+    textTransform: "uppercase" as const,
+    marginBottom: "16px",
   },
 
   helpOption: {
     display: "block",
     width: "100%",
-    backgroundColor: "#4CC9A3",
+    backgroundColor: "#F2B33D",
     color: "#000",
     border: "none",
-    borderRadius: "6px",
-    padding: "10px",
-    marginBottom: "8px",
+    borderRadius: "10px",
+    padding: "16px",
+    marginBottom: "12px",
     cursor: "pointer",
-    fontWeight: 700,
+    fontSize: "18px",
+    fontWeight: 800,
+    letterSpacing: "0.5px",
+    textTransform: "uppercase" as const,
+    boxShadow: "0 0 12px rgba(242, 179, 61, 0.5)",
   },
 
   cancelHelpButton: {
-    backgroundColor: "#333",
-    color: "#FFF",
-    border: "none",
-    borderRadius: "6px",
-    padding: "8px 16px",
+    backgroundColor: "transparent",
+    color: "#F2B33D",
+    border: "2px solid #F2B33D",
+    borderRadius: "10px",
+    padding: "12px 24px",
+    marginTop: "4px",
     cursor: "pointer",
+    fontSize: "16px",
+    fontWeight: 800,
+    letterSpacing: "0.5px",
+    textTransform: "uppercase" as const,
   },
+
   leaveButton: {
   backgroundColor: "#B4473A",
   color: "#FFFFFF",
-  padding: "12px 24px",
-  borderRadius: "6px",
+  padding: "18px 24px",
+  borderRadius: "10px",
   border: "none",
   cursor: "pointer",
-  fontSize: "16px",
-  fontWeight: 600,
-  marginRight: "12px",
+  fontSize: "20px",
+  fontWeight: 800,
+  letterSpacing: "0.5px",
+  textTransform: "uppercase" as const,
+  flex: "1 1 200px",
+  maxWidth: "320px",
+  boxShadow: "0 0 16px rgba(180, 71, 58, 0.6)",
 },
 undoHelpButton: {
   backgroundColor: "#B4473A",
   color: "#FFFFFF",
-  padding: "12px 24px",
-  borderRadius: "6px",
+  padding: "18px 24px",
+  borderRadius: "10px",
   border: "none",
   cursor: "pointer",
-  fontSize: "16px",
-  fontWeight: 600,
-  marginLeft: "12px",
+  fontSize: "20px",
+  fontWeight: 800,
+  letterSpacing: "0.5px",
+  textTransform: "uppercase" as const,
+  flex: "1 1 200px",
+  maxWidth: "320px",
+  boxShadow: "0 0 16px rgba(180, 71, 58, 0.6)",
 },
 };
 

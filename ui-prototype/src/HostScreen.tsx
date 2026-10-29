@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "./GlobalStore";
 import { scenarioSentence } from "./ScenarioOption";
@@ -21,6 +21,20 @@ export default function HostScreen() {
 
   const [mode, setMode] = useState<"create" | "edit" | "play">("create");
   const [tone, setTone] = useState<string>("");
+  const chatLogRef = useRef<HTMLDivElement>(null);
+  const stickToBottom = useRef(true);
+
+  // Follow new messages only if the host hasn't scrolled up to read older ones
+  const handleChatScroll = () => {
+    const log = chatLogRef.current;
+    if (!log) return;
+    stickToBottom.current = log.scrollHeight - log.scrollTop - log.clientHeight < 40;
+  };
+
+  useEffect(() => {
+    const log = chatLogRef.current;
+    if (log && stickToBottom.current) log.scrollTop = log.scrollHeight;
+  }, [messages, mode]);
   const gameOver = hullIntegrity <= 0 || hullIntegrity >= 12;
   const won = hullIntegrity >= 12;
 
@@ -79,7 +93,7 @@ export default function HostScreen() {
         <h1 style={styles.createHeading}>Create Your Campaign</h1>
 
         <label style={styles.label}>
-          Tone
+          Tone (optional)
           <input
             style={styles.input}
             placeholder="Ex. Lighthearted"
@@ -107,7 +121,7 @@ export default function HostScreen() {
         <h1 style={styles.createHeading}>Campaign Settings</h1>
 
         <label style={styles.label}>
-          Tone
+          Tone (optional)
           <input
             style={styles.input}
             placeholder="Ex. Lighthearted"
@@ -199,7 +213,7 @@ export default function HostScreen() {
   <div style={styles.centerBox}>
     <h2 style={styles.centerHeading}>Live Chat Log</h2>
 
-    <div style={styles.chatLog}>
+    <div ref={chatLogRef} style={styles.chatLog} onScroll={handleChatScroll}>
       {messages.length === 0 && (
         <div style={styles.chatEmpty}>No messages yet.</div>
       )}
@@ -456,7 +470,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   chatLine: {
     marginBottom: "8px",
-    fontSize: "14px",
+    fontSize: "17px",
     color: "#E0E0E0",
   },
   chatEmpty: {

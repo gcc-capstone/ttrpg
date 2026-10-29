@@ -2,30 +2,38 @@ import React, { useState } from "react";
 
 const sections = {
   "Players: Create Characters": [
-    "Choose a style",
-    "Choose a role",
-    "Choose your number",
-    "Give your character a name",
-    "Player goal",
-    "Character goal"
+    "Choose a style (Alien, Android, Dangerous, Heroic, Hot‑Shot, Intrepid, Savvy).",
+    "Choose a role (Doctor, Envoy, Engineer, Explorer, Pilot, Scientist, Soldier).",
+    "Pick an Aptitude Number (2–5) to determine whether you excel at Lasers or Feelings.",
+    "Give your character a cool space‑adventure name.",
+    "Select a personal goal (Become Captain, Meet Aliens, Solve Mysteries, Shoot Bad Guys, etc.).",
+    "Start with standard Consortium gear and a variable‑beam phase pistol."
   ],
+
   "Players: Create the Ship": [
-    "Pick two strengths",
-    "Pick one problem"
+    "Choose two strengths for the Raptor (Fast, Nimble, Well‑Armed, Powerful Shields, Superior Sensors, Cloaking Device, Fightercrafts).",
+    "Choose one ship problem (Fuel Hog, Only One Medical Pod, Exploding Circuit Breakers, Grim Reputation)."
   ],
+
   "Rolling the Dice": [
-    "How rolls work",
-    "Laser Feelings",
-    "Helping"
+    "Roll 1d6 when attempting something risky; gain extra dice if prepared or an expert.",
+    "For Lasers actions: roll under your number. For Feelings actions: roll over your number.",
+    "0 successes: things go wrong. 1 success: succeed with a complication. 2 successes: clean success. 3 successes: critical success.",
+    "Rolling your number exactly grants Laser Feelings — ask the GM an important question.",
+    "Helping: roll to assist another player; success gives them +1d."
   ],
+
   "GM: Create a Space Adventure": [
-    "Threat tables",
-    "Adventure structure"
+    "Build the mission using three tables: Threat, What the Threat Wants, and the Consequence if the crew fails.",
+    "Combine these elements to form the core conflict of the adventure."
   ],
+
   "GM: Run the Game": [
-    "Play to find out",
-    "Show signs of danger",
-    "Ask questions"
+    "Introduce the threat through clues, danger signs, or strange events.",
+    "Ask players what they do before the threat acts; call for rolls when outcomes are uncertain.",
+    "Use failures to escalate tension and push the story forward.",
+    "Ask players questions and build on their answers to shape the narrative.",
+    "Play to discover how the crew overcomes the threat — not to enforce a predetermined plot."
   ]
 };
 
@@ -33,38 +41,61 @@ export default function AboutModal({ onClose }) {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
+    <div
+      className="aptitude-modal-overlay"
+      onClick={onClose}
+    >
+      <div
+        className="aptitude-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="about-modal-title"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") onClose();
+        }}
+      >
         {!activeSection && (
           <>
-            <h2 style={styles.title}>About the Game</h2>
+            <h2 id="about-modal-title">About the Game</h2>
 
             {Object.keys(sections).map((section) => (
               <button
                 key={section}
-                style={styles.sectionButton}
+                type="button"
+                className="aptitude-modal-close" // reused style for teal button
+                style={{ width: "100%", marginBottom: "12px" }}
                 onClick={() => setActiveSection(section)}
               >
                 {section}
               </button>
             ))}
 
-            <button style={styles.closeButton} onClick={onClose}>Close</button>
+            <button
+              type="button"
+              className="aptitude-modal-close"
+              onClick={onClose}
+            >
+              Close
+            </button>
           </>
         )}
 
         {activeSection && (
           <>
-            <h2 style={styles.title}>{activeSection}</h2>
+            <h2>{activeSection}</h2>
 
-            <ul style={styles.list}>
+            <ul style={{ paddingLeft: "20px", marginBottom: "20px" }}>
               {sections[activeSection].map((item, i) => (
-                <li key={i} style={styles.listItem}>{item}</li>
+                <li key={i} style={{ marginBottom: "10px", color: "#eee" }}>
+                  {item}
+                </li>
               ))}
             </ul>
 
             <button
-              style={styles.backButton}
+              type="button"
+              className="aptitude-modal-close"
               onClick={() => setActiveSection(null)}
             >
               Back
@@ -75,68 +106,3 @@ export default function AboutModal({ onClose }) {
     </div>
   );
 }
-
-const styles = {
-  overlay: {
-    position: "fixed",
-    top: 0, left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "rgba(0,0,0,0.7)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-  },
-  modal: {
-    backgroundColor: "#111",
-    border: "3px solid #4CC9A3",
-    borderRadius: "12px",
-    padding: "30px",
-    width: "400px",
-    color: "#4CC9A3",
-    textAlign: "center",
-  },
-  title: {
-    fontSize: "24px",
-    marginBottom: "20px",
-  },
-  sectionButton: {
-    width: "100%",
-    padding: "12px",
-    marginBottom: "10px",
-    backgroundColor: "#4CC9A3",
-    color: "#000",
-    borderRadius: "8px",
-    fontWeight: 700,
-    cursor: "pointer",
-    border: "none",
-  },
-  list: {
-    textAlign: "left",
-    marginBottom: "20px",
-  },
-  listItem: {
-    marginBottom: "8px",
-    color: "#CCC",
-  },
-  backButton: {
-    padding: "10px 20px",
-    backgroundColor: "#4CC9A3",
-    color: "#000",
-    borderRadius: "8px",
-    fontWeight: 700,
-    cursor: "pointer",
-    border: "none",
-  },
-  closeButton: {
-    marginTop: "20px",
-    padding: "10px 20px",
-    backgroundColor: "#4CC9A3",
-    color: "#000",
-    borderRadius: "8px",
-    fontWeight: 700,
-    cursor: "pointer",
-    border: "none",
-  }
-};

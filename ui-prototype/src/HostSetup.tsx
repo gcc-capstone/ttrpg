@@ -64,12 +64,7 @@ export default function HostSetup() {
     <div style={styles.page}>
       <h1 style={styles.title}>Scenario Setup</h1>
 
-      {/* TOP BOX — Player Visual */}
-      <div style={styles.playerVisualBox}>
-        {Array.from({ length: playerCount }).map((_, i) => (
-          <img key={i} src={playerIcon} alt="" style={styles.playerVisualIcon} />
-        ))}
-      </div>
+      
 
       {/* 2×2 GRID */}
       <div style={styles.grid}>
@@ -134,38 +129,51 @@ export default function HostSetup() {
         </div>
       </div>
 
-      {/* NOTES BOX */}
-      <div style={styles.notesSection}>
-        <label style={styles.label}>Game Setup Notes</label>
-        <textarea
-          style={styles.textarea}
-          placeholder="Write any custom rules, mission details, or GM notes here..."
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-        />
-      </div>
-
       {/* PLAYER NUMBER SELECTOR */}
-      <div style={styles.playerIconRow}>
-        {Array.from({ length: 6 }).map((_, i) => {
-          const num = i + 1;
-          const selected = num === playerCount;
+      <div className="slider-row">
+        <span className="slider-side">1 Player</span>
 
-          return (
-            <div
-              key={num}
-              style={{
-                ...styles.playerIconOption,
-                ...(selected ? styles.playerIconSelected : {})
-              }}
-              onClick={() => setPlayerCount(num)}
-            >
-              <img src={playerIcon} alt="" style={styles.playerIconImage} />
-              <div style={styles.playerIconNumber}>{num}</div>
+        <div className="slider-area">
+          <div className="number-slider-wrapper">
+            <div className="number-slider-track" aria-hidden="true">
+              {[1, 2, 3, 4, 5, 6].map((num) => (
+                <span
+                  key={num}
+                  className="number-tick"
+                  style={{ left: `${((num - 1) / 5) * 100}%` }}
+                />
+              ))}
             </div>
-          );
-        })}
+
+            <input
+              id="player-count-slider"
+              className="number-slider"
+              type="range"
+              min={1}
+              max={6}
+              step={1}
+              value={playerCount}
+              onChange={(e) => setPlayerCount(Number(e.target.value))}
+            />
+          </div>
+
+          <div className="number-labels" aria-hidden="true">
+            {[1, 2, 3, 4, 5, 6].map((num) => (
+              <span key={num}>{num}</span>
+            ))}
+          </div>
+        </div>
+
+        <span className="slider-side">6 Players</span>
       </div>
+
+      {/* TOP BOX — Player Visual */}
+      <div style={styles.playerVisualBox}>
+        {Array.from({ length: playerCount }).map((_, i) => (
+          <img key={i} src={playerIcon} alt="" style={styles.playerVisualIcon} />
+        ))}
+      </div>
+
 
       {/* BOTTOM BUTTONS */}
       <div style={styles.bottomRow}>

@@ -1,5 +1,5 @@
 /* Character creation number slider: 2–5, mint-green accents. */
-.number-heading { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.number-heading { display: flex; align-items: center; justify-content: center; gap: 36px; }
 .number-heading output { color: #4CC9A3; font-size: 22px; font-weight: 700; }
 .slider-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
 .slider-side { color: #fff; font-size: 14px; font-weight: 600; white-space: nowrap; }
@@ -62,4 +62,18 @@
 .actionMethod--inactive {
     background: #545454;
     color: #EEEEEE;
+}
+/* Equal side columns keep the value aligned with the slider's final tick. */
+.slider-row {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr) 70px;
+  gap: 12px;
+  align-items: start;
+  position: relative;
+}
+.slider-side {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

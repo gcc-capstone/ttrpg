@@ -20,6 +20,7 @@ export default function ClientScreen({ clientId }: { clientId?: number }) {
   const won = hullIntegrity >= 12;
 
   const [mode, setMode] = useState<"create" | "preview" | "roll" | "chat">("create");
+  const [actionMethod, setActionMethod] = useState<"lasers" | "feelings">("lasers");
   const [showHelpOptions, setShowHelpOptions] = useState(false);
   const [helpTopic, setHelpTopic] = useState<"aptitude" | "style" | "role" | null>(null);
 
@@ -471,7 +472,7 @@ const handleUndoHelp = () => {
     <div style={styles.page}>
       <div style={styles.topBar}>
         <div style={styles.topIcon}>X</div>
-        <p style = {styles.heading}>PLAYER TERMINAL</p>
+        <p style = {styles.heading}>{ character.name.toUpperCase() }</p>
         <div style={styles.topIcon} onClick={() => setShowStats(!showStats)}>≡</div>
       </div>
 
@@ -557,6 +558,21 @@ const handleUndoHelp = () => {
     </button>
   </div>
 )}
+
+<div style = {styles.actionRow}>
+  <button
+    className = "actionMethodButton"
+    onClick = { () => (actionMethod === "lasers") ? setActionMethod("feelings") : setActionMethod("lasers") }
+    disabled = {!isMyTurn}
+  >
+    <div className = { "actionMethod " + ((actionMethod === "lasers" && isMyTurn) ? "actionMethod--lasers" : "actionMethod--inactive") }>
+      LASERS
+    </div>
+    <div className = { "actionMethod " + ((actionMethod === "feelings" && isMyTurn) ? "actionMethod--feelings" : "actionMethod--inactive") }>
+      FEELINGS  
+    </div>
+  </button>
+</div>
 
 <div style={styles.actionRow}>
   <div style={styles.inputContainer}>
@@ -771,7 +787,7 @@ const styles = {
   },
   actionRow: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "center",
     padding: "12px",
     backgroundColor: "#000",
   },

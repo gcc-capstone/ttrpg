@@ -140,6 +140,7 @@ const styles = {
     color: "#FFF",
     border: "2px solid #4CC9A3",
     borderRadius: "6px",
+    boxSizing: "border-box",
   },
   error: {
     color: "#B4473A",

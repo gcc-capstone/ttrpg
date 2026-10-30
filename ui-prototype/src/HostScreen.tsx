@@ -220,7 +220,9 @@ export default function HostScreen() {
 
       {messages.map((m, i) => (
         <div key={i} style={styles.chatLine}>
-          <strong>{m.from.includes("client") ? m.from : "GM"}:</strong>{" "}
+          <strong>{m.from.startsWith("client")
+            ? characters.find((c) => c.clientId === Number(m.from.slice(6)))?.name ?? m.from
+            : "GM"}:</strong>{" "}
           {m.text}
         </div>
       ))}
@@ -242,6 +244,7 @@ export default function HostScreen() {
 
       {/* BOTTOM — ship hull integrity */}
       <div style={styles.hullRow}>
+        {/* Hull integrity meter temporarily hidden.
         <div style={styles.hullLabel}>
           <span style={styles.hullTitle}>HULL INTEGRITY</span>
           <span style={styles.hullValue}>
@@ -280,6 +283,7 @@ export default function HostScreen() {
             aria-label={`Hull integrity pointer at ${hullIntegrity}`}
           />
         </div>
+        */}
         {/* JOIN CODE — bottom-left */}
         {host && (
         <div style={styles.joinCodeBox}>
@@ -287,11 +291,13 @@ export default function HostScreen() {
           <div style={styles.joinCodeValue}>{host.code}</div>
         </div>
         )}
+        {/* Hull integrity overflow message temporarily hidden.
         {hullIntegrity > MAX_HULL_INTEGRITY && (
           <div style={styles.hullOverflow}>
             Hull integrity is above the visible hit points.
           </div>
         )}
+        */}
       </div>
       
 

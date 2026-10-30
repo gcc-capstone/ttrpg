@@ -27,3 +27,39 @@
 .aptitude-modal p { margin: 0 0 14px; line-height: 1.5; color: #eee; }
 .aptitude-modal strong { color: #4CC9A3; }
 .aptitude-modal-close { display: block; margin: 22px auto 0; padding: 12px 24px; border: 0; border-radius: 8px; background: #4CC9A3; color: #000; font-size: 16px; font-weight: 700; cursor: pointer; }
+
+.actionMethodButton {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border-color: #4CC9A3;
+    background: none;
+    cursor: pointer;
+    margin: 10px 16px;
+    font-weight: 700;
+}
+
+.actionMethod {
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin: 10px 16px;
+    font-weight: 700;
+}
+
+.actionMethod--feelings {
+    background: #FF00A4;
+    color: #111111;
+}
+
+.actionMethod--lasers {
+    background: #00FFF7;
+    color: #111111;
+}
+
+.actionMethod--inactive {
+    background: #545454;
+    color: #EEEEEE;
+}

@@ -220,7 +220,9 @@ export default function HostScreen() {
 
       {messages.map((m, i) => (
         <div key={i} style={styles.chatLine}>
-          <strong>{m.from.includes("client") ? m.from : "GM"}:</strong>{" "}
+          <strong>{m.from.startsWith("client")
+            ? characters.find((c) => c.clientId === Number(m.from.slice(6)))?.name ?? m.from
+            : "GM"}:</strong>{" "}
           {m.text}
         </div>
       ))}

@@ -12,11 +12,27 @@ Joshua Burick, Sheldon Deal, JohnMichael Ross, Henry Tan
 
 # Section 2: Introduction
 
-This product is a web-hosted AI that should serve to eliminate the necessity of the 'Game Master' (GM) role for the Table-Top Role-Playing Game (TTRPG) 'Lasers and Feelings' by taking on the responsibilities of said role, thus reducing the time and stress that would be required of an individual in planning and tracking a campaign session. With this, we aim to serve a number of existing or potential players with an emphasis on those who want to take a break from being the designated GM but whose players aren't willing to serve as a substitute, those who want to start a campaign but aren't confident enough in the rules or their improvisational abilities to try hosting the game, or those groups who can barely manage to schedule a session together let alone have someone plan anything substantial.
+This product is a web-hosted AI that should serve to eliminate the necessity of the 'Game Master' (GM) role for the Table-Top Role-Playing Game (TTRPG) 'Lasers and Feelings' by taking on the responsibilities of said role, thus reducing the time and stress that would be required of an individual in planning and tracking a campaign session. 
 
-Utilizing this system, players should be able to create and customize their own games of 'Lasers and Feelings', specifying the tone, difficulty, and general feel of the game, and being able to change it as the party needs or wants. This service aims to streamline not only the process of character creation, but the flow of the game once in-action as well, handling the ideation of consequences for actions and reducing time wasted looking up rules or stats. Players can get into the action queue, send their actions from their own device, roll for success, and watch on the main screen as the AI GM dictates the results and consequences. This AI GM is also functional in the case of long-play, capable of running a campaign for as long as the players want or until they reach a game-over.
 
-Given the nature of this product, some additional clarification and background on the subject matter should be provided. 'Lasers and Feelings' is a role-playing game that follows in the footsteps of the Old-School Renaissance (OSR) movement, focusing more on narrative storytelling rather than mechanics or simulation. In this, the full set of instructions for 'Lasers and Feelings' is contained within a single page, emphasizing its minimalist approach and leaving lots of room for interpretation and exploration by the GM and players. This open-endedness is in part the reason for selecting 'Lasers and Feelings' as the system which the GM-PC will operate within; it allows for full utilization of generative AI's 'creative output' while minimizing the hard constraints and parsing of player action as would be required by a larger rule set.
+> [!IMPORTANT]
+> **INSTRUCTOR COMMENT — ACTION REQUIRED**
+>
+> Really long sentence.  Also this is not just an AI - it is an AI facilitated lasers and feelings game.
+
+
+With this, we aim to serve a number of existing or potential players with an emphasis on those who want to take a break from being the designated GM but whose players aren't willing to serve as a substitute, those who want to start a campaign but aren't confident enough in the rules or their improvisational abilities to try hosting the game, or those groups who can barely manage to schedule a session together let alone have someone plan anything substantial.
+
+
+> [!IMPORTANT]
+> **INSTRUCTOR COMMENT — ACTION REQUIRED**
+>
+> this one is also long ok here - can leave as is
+
+
+Utilizing this system, players will be able to create and customize their own games of 'Lasers and Feelings', specifying the tone, difficulty, and general feel of the game, and being able to change it as the party desires. This service aims to streamline not only the process of character creation, but the flow of the game as well, handling the ideation of consequences for actions and reducing time wasted looking up rules or stats. Players can get into the action queue, send their actions from their own device, roll for success, and watch on the main screen as the AI GM dictates the results and consequences. This AI GM is also functional in the case of long-play, capable of running a campaign for as long as the players want or until they reach a game-over.
+
+Given the nature of this product, some additional clarification and background on the subject matter will be provided. 'Lasers and Feelings' is a role-playing game that follows in the footsteps of the Old-School Renaissance (OSR) movement, focusing more on narrative storytelling rather than mechanics or simulation. In this, the full set of instructions for 'Lasers and Feelings' is contained within a single page, emphasizing its minimalist approach and leaving lots of room for interpretation and exploration by the GM and players. This open-endedness is in part the reason for selecting 'Lasers and Feelings' as the system which the GM-PC will operate within; it allows for full utilization of generative AI's 'creative output' while minimizing the hard constraints and parsing of player action as would be required by a larger rule set.
 
 ---
 
@@ -28,6 +44,13 @@ The following items are the representative tasks for the GM-PC, and they serve a
 
 - **MVP:** As the AI finishes with its harrowing description of the shapeshifting ooze squeezing its way through the locked door on the other side of the corridor, the party realizes they've now trapped themselves in a box with the creature. Andrew realizes that as a soldier, he has a small chance to scare it off with some rounds of his laser pistol, so he hurriedly joins the action queue. To his frustration, Ian's engineer got in queue before him so he will have to wait for his turn. Andrew takes this moment to survey the situation and realizes with horror that the emergency meter has almost reached a critical point, and one more catastrophic failure could swiftly end this campaign. (cont.)
 
+
+> [!IMPORTANT]
+> **INSTRUCTOR COMMENT — ACTION REQUIRED**
+>
+> For the eternal camppaign will there be a meter?  just wondering if we should remove the meter from mvp - but queue stays.
+
+
 ### Help Action
 
 - **MVP:** (cont.) While this is happening, Ian is explaining to the group and typing up how he wants his engineer to tear open the nearby door panel and short-circuit the whole power relay for the spacecraft wing, thereby opening the door. Hearing this, Andrew jumps into the discussion, mentioning how his soldier has unused micro-charges that Ian could probably use to expedite the process and indicates on his phone that he wants to help the current action. The AI GM waits for Ian to finish his action description and Andrew to finish his help explanation before deciding that both actions are reasonable. The extra die Andrew provided Ian when rolling for the outcome makes the critical difference and the party narrowly escapes the encounter.
@@ -35,6 +58,13 @@ The following items are the representative tasks for the GM-PC, and they serve a
 ### Adventure Summary
 
 - **MVP:** Jimmy and his friends have had trouble scheduling time to get together and play as a group, so it's been a week or two since the last time they played. While they can all agree that they had defeated the space pirates at the end of the last session, they can't agree on what they had started to do next. To solve this problem, Jimmy has the AI GM create a summary of what happened last time in their adventures. The AI informs them of their exploits, ship status, items-on-hand, and individual status; in particular, the GM explains that after the space pirate attack, their ship had sustained major damage, and they were on their way to the nearest port to get some repairs performed with some cash on-hand. This settles the debate and centers the group on a clear next course of action.
+
+
+> [!IMPORTANT]
+> **INSTRUCTOR COMMENT — ACTION REQUIRED**
+>
+> The summary should be created automatically when the game is shut down or "saved" (not sure you need an action at all).  This summary should appear automatically when they resume the game. 
+
 
 ### Game Creation
 
@@ -60,13 +90,35 @@ The following items are the representative tasks for the GM-PC, and they serve a
 
 - **MVP:** Caleb has just finished another long session of his solo campaign and wants to continue this adventure at a later point in time. He has noticed the occasional message of 'Quick Saved' pop up during his various play sessions and noted that his game picks up right where he left off when he returns. However, Caleb plans on trading in his computer due to its poor performance and inability to handle required software for work. With this, Caleb saves a file-copy of his game data to later transfer his game to his new device, load up the data and continue playing that same campaign with his favorite character. 
 
+
+> [!IMPORTANT]
+> **INSTRUCTOR COMMENT — ACTION REQUIRED**
+>
+> definitely dont want some cron job doing a quick save in mvp --- might not even want the message -- dont pin yourselves to this.  I like the idea of file copy - but dont make it mvp either.
+
+
 ### Display Feedback
 
 - **MVP:** James is waiting for Sam to choose between opening the door or leaving it shut because there is a weird sound coming from the other side. Sam decides to use an action to open the door, causing a rabid beast to enter the room. James decides to display a thumbs down because Sam made the wrong decision, causing everyone to laugh.
 
+
+> [!IMPORTANT]
+> **INSTRUCTOR COMMENT — ACTION REQUIRED**
+>
+> Also remove from mvp i think.
+
+
 ### Rolling the Dice
 
 - **MVP:** Johnathan is about to finish his turn but decides to clean the ceiling fans thirty feet up in the air. Because there is a risk of him falling or damaging the fan in the process, he must roll dice to see what the result is. He rolls two failures, causing the fan to fall on the new shipment of oxygen canisters, meaning that their oxygen supplies will only last for one week. 
+
+
+> [!IMPORTANT]
+> **INSTRUCTOR COMMENT — ACTION REQUIRED**
+>
+> I think you should have (perhaps non-mvp features) that lean into ai some more for game and character creation.  Perhaps an option to use an AI assistant --- which from there whould ask a series of questions and give some info and suggestions and perhaps question options and at the end create the character or game.  Also - not mvp but task that shows that the game is ended approximately at the correct duration for non-eternal games --- perhaps add the meter here.
+
+
 
 ### 
 
